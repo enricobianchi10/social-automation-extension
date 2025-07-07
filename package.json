@@ -1,0 +1,23 @@
+{
+  "name": "social-automation-extension",
+  "version": "1.0.0",
+  "description": "Estensione Chrome per automatizzare l'interazione con i social network.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/enricobianchi10/social-automation-extension.git"
+  },
+  "keywords": [],
+  "author": "Enrico Bianchi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/enricobianchi10/social-automation-extension/issues"
+  },
+  "homepage": "https://github.com/enricobianchi10/social-automation-extension#readme",
+  "devDependencies": {
+    "jest": "^30.0.4"
+  }
+}
