@@ -1,0 +1,18 @@
+# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Directory per gli ambienti di test
+coverage/
+
+# Files di sistema OS
+.DS_Store
+
+# Environment variables
+.env
