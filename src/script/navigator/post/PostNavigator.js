@@ -34,7 +34,7 @@ class PostNavigator {
         else {
             console.log("Pulsante per prossimo post trovato!");
             nextBtn.click();
-            await this.delay(3000);
+            await this.delay(3000); //si può probabilmente migliorare con l'utilizzo di MutationObserver
             return true;
         }
     } 
