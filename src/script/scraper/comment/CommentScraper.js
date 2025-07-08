@@ -1,16 +1,11 @@
-//selettore lista span con testo dei commenti 'div.xt0psk2 > span[dir]'
-//selettore lista con autori commenti '._a9ym > .x11njtxf .x568u83'
-//selettore lista autori risposte ad un commento '._a9ye .x568u83'
-//selettore lista con testo delle risposte ad un commento '._a9ye ._aade'
-//selettore xpath per autore non commento gif //h3[not(following-sibling::div[.//img])]//a[string-length(normalize-space(text())) > 0]
+//xpath per trovare autori ai commenti '//article//h3', migliorata per escludere autori di commenti con gif, '//article//h3[not(following-sibling::div[1]/img)]'
+//xapth per trovare testi dei commenti '//article//h3/following-sibling::div[1]/span' (funziona anche senza article)
 
 class CommentScraper {
     static async scrapeComment(){
         console.log("Inizio scraping dei commenti");
-        // per facebook ma bannato const post = document.querySelector('img[data-visualcompletion]');
-        const listTextComment = document.querySelectorAll("div.xt0psk2 > span[dir]");
-        // per facebook ma bannato const postCaption = document.querySelector(".x1g2khh7 .xzsf02u").innerText; selettore per caption del post
-        const listAuthorComment = document.querySelectorAll("._a9ym > .x11njtxf .x568u83");
+        const listTextComment = XPathManager.getAll('//article//h3/following-sibling::div[1]/span');
+        const listAuthorComment = XPathManager.getAll('//article//h3[not(following-sibling::div[1]/img)]');
         console.log("Trovata lista testi commenti di lunghezza:", listTextComment.length);
         console.log("Trovata lista autori commenti di lunghezza:", listAuthorComment.length);
         let comments = [];

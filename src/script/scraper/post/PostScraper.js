@@ -1,12 +1,13 @@
+//xpath per immagine del post //article//img[@alt], migliorata per evitare di prendere anche foto profilo in,
+// '//article//img[@alt and not(ancestor::a) and not(contains(@alt, "profilo"))]'
+//xpath per caption //article//h1
 class PostScraper {
     static async scrapePost(){
         console.log("Inizio scraping del post");
-        // per facebook ma bannato const post = document.querySelector('img[data-visualcompletion]');
-        const postList = document.querySelectorAll("div._aagv > img[alt]");
-        const post = postList[postList.length - 1];
-        const postUrl = post?.src || null;
-        // per facebook ma bannato const postCaption = document.querySelector(".x1g2khh7 .xzsf02u").innerText; selettore per caption del post
-        const postCaption = document.querySelector("div.xt0psk2 h1[dir]")?.innerText; //selettore caption post
+        const post = XPathManager.getOne('//article//img[@alt and not(ancestor::a) and not(contains(@alt, "profilo"))]');
+        if(!post) console.log("Scrape di un video");
+        const postUrl = post?.src || "Video";
+        const postCaption = XPathManager.getOne('//article//h1').innerText; //selettore caption post
         return new Post(postUrl, postCaption, []);
     }
 }

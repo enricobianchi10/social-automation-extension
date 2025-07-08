@@ -1,4 +1,6 @@
-//selettore per caricare nuovi commenti document.querySelector('svg[aria-label="Carica altri commenti"]').closest('button')
+//xpath per svg carica altri commenti "'//*[local-name()="svg" and ancestor::article and @aria-label="Carica altri commenti"]'"
+//xapth per button, non serve closest, //article//button[.//*[@aria-label="Carica altri commenti"]]
+
 
 class CommentNavigator {
     constructor(){
@@ -20,7 +22,7 @@ class CommentNavigator {
     async loadAllComments(){
         this.hasNewCommBtn = true;
         while(this.hasNewCommBtn){
-            const nextCommBtn = document.querySelector('svg[aria-label="Carica altri commenti"]')?.closest('button');
+            const nextCommBtn = XPathManager.getOne('//article//button[.//*[@aria-label="Carica altri commenti"]]');
             if(!nextCommBtn){
                 console.log("Nessun pulsante di nuovi commenti");
                 this.hasNewCommBtn = false;
