@@ -23,3 +23,5 @@ class CommentScraper {
         return comments;
     }
 }
+
+//problema che se il commento non ha testo ma un img si "sballa" tutto 
