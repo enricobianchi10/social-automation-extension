@@ -25,7 +25,7 @@ class PostNavigator {
     }
 
     async goToNextPost(){
-        const nextBtn = document.querySelector("[aria-label='Avanti']")?.closest('button'); //selettore per andare avanti di post
+        const nextBtn = document.querySelectorAll(".x197sbye .x1useyqa")[1]; //selettore per andare avanti di post
         if(!nextBtn){
             console.log("Nessun pulsante di prossimo post trovato");
             this.hasNextBtn = false;

@@ -6,10 +6,10 @@
 class CommentScraper {
     static async scrapeComment(){
         console.log("Inizio scraping dei commenti");
-        // per facebook ma bannato const post = document.querySelector('img[data-visualcompletion]');
-        const listTextComment = document.querySelectorAll("div.xt0psk2 > span[dir]");
-        // per facebook ma bannato const postCaption = document.querySelector(".x1g2khh7 .xzsf02u").innerText; selettore per caption del post
-        const listAuthorComment = document.querySelectorAll("._a9ym > .x11njtxf .x568u83");
+
+        const listTextComment = document.querySelectorAll("span.xzsf02u .x1vvkbs div");
+        
+        const listAuthorComment = document.querySelectorAll(".x1sibtaa.xzsf02u");
         console.log("Trovata lista testi commenti di lunghezza:", listTextComment.length);
         console.log("Trovata lista autori commenti di lunghezza:", listAuthorComment.length);
         let comments = [];
