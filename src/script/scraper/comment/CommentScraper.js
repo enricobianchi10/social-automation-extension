@@ -2,6 +2,7 @@
 //selettore lista con autori commenti '._a9ym > .x11njtxf .x568u83'
 //selettore lista autori risposte ad un commento '._a9ye .x568u83'
 //selettore lista con testo delle risposte ad un commento '._a9ye ._aade'
+//selettore xpath per autore non commento gif //h3[not(following-sibling::div[.//img])]//a[string-length(normalize-space(text())) > 0]
 
 class CommentScraper {
     static async scrapeComment(){
