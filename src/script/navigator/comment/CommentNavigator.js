@@ -18,6 +18,7 @@ class CommentNavigator {
     }
 
     async loadAllComments(){
+        this.hasNewCommBtn = true;
         while(this.hasNewCommBtn){
             const nextCommBtn = document.querySelector('svg[aria-label="Carica altri commenti"]')?.closest('button');
             if(!nextCommBtn){
