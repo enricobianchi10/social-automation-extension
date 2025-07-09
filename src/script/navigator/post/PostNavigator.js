@@ -21,22 +21,16 @@ class PostNavigator {
         this._post = post_url;
     }
 
-    async delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
     async goToNextPost(){
         const nextBtn = XPathManager.getOne('//button[.//*[@aria-label="Avanti"]]'); //selettore per andare avanti di post
         if(!nextBtn){
             console.log("Nessun pulsante di prossimo post trovato");
             this.hasNextBtn = false;
-            return false;
         }
         else {
             console.log("Pulsante per prossimo post trovato!");
             nextBtn.click();
-            await this.delay(3000); //si può probabilmente migliorare con l'utilizzo di MutationObserver
-            return true;
+            await delay(3000); //si può probabilmente migliorare con l'utilizzo di MutationObserver
         }
     } 
 }

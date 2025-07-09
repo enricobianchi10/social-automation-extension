@@ -1,6 +1,7 @@
 class Post {
-    constructor(url, caption, likes_number, comments){
+    constructor(url, src, caption, likes_number, comments){
         this._url = url;
+        this._src = src;
         this._caption = caption;
         this._likes_number = likes_number;
         this._comments = comments;
@@ -8,6 +9,10 @@ class Post {
 
     get url() {
         return this._url;
+    }
+
+    get src() {
+        return this._src;
     }
 
     get caption(){

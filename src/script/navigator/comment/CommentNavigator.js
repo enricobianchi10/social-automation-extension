@@ -15,10 +15,6 @@ class CommentNavigator {
         this._hasNewCommBtn = hasNewCommBtn;
     }
 
-    async delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
     async loadAllComments(){
         this.hasNewCommBtn = true;
         while(this.hasNewCommBtn){
@@ -30,7 +26,7 @@ class CommentNavigator {
             else {
                 console.log("Pulsante per caricare commenti trovato!");
                 nextCommBtn.click();
-                await this.delay(3000); //si può probabilmente migliorare con l'utilizzo di MutationObserver
+                await delay(3000); //si può probabilmente migliorare con l'utilizzo di MutationObserver
             }
         }
     } 

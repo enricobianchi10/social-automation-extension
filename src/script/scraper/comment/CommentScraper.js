@@ -13,7 +13,7 @@ class CommentScraper {
         let comments = [];
         listTextComment.forEach((node,index) => {
             const text = node.innerText;
-            const author = listAuthorComment[index]?.innerText || "";
+            const author = listAuthorComment[index]?.innerText || "Autore non trovato";
             const comment = new Comment(author, text, []);
             comments.push(comment);
         });
@@ -22,4 +22,4 @@ class CommentScraper {
     }
 }
 
-//problema che per ora prendono anche le replies
+//problema che per ora prendono anche le replies se visibili

@@ -4,5 +4,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         case 'getPost':
             console.log("Ricevuta richiesta di ottenere dati del post");
             chrome.tabs.sendMessage(message.tabId, {action: "scrapePost"}); 
+            break;
+        case 'savePost':
+            console.log("Ricevuta richiesta di salvare il post");
+            chrome.tabs.sendMessage(sender.tab.id, { action: "savePost", post: message.post });
+            break;
     }
 })
