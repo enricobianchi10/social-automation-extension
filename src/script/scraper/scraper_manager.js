@@ -17,6 +17,7 @@ async function scrapeSinglePost(){
     let post = await PostScraper.scrapePost();
     console.log("Trovato URL del post:", post.url);
     console.log("Trovata caption del post:", post.caption);
+    console.log("Trovato numero likes del post:", post.likesNumber);
     //ora andrebbe fatto scraping dei commenti tramite comment scraper e poi aggiungerli al post generato da postScraper
     await commentNavigator.loadAllComments();
     let comments = await CommentScraper.scrapeComment();

@@ -1,5 +1,7 @@
 //xpath per trovare autori ai commenti '//article//h3', migliorata per escludere autori di commenti con gif, '//article//h3[not(following-sibling::div[1]/img)]'
 //xapth per trovare testi dei commenti '//article//h3/following-sibling::div[1]/span' (funziona anche senza article)
+//testi commenti migliorato per non prendere replies '//article//h3/following-sibling::div[1]/span[not(ancestor::ul/ancestor::li/ancestor::ul)]'
+//autori commenti migliorato per non prendere replies '//article//h3[not(following-sibling::div[1]/img) and not(ancestor::ul/ancestor::li/ancestor::ul)]'
 
 class CommentScraper {
     static async scrapeComment(){
@@ -20,4 +22,4 @@ class CommentScraper {
     }
 }
 
-//problema che se il commento non ha testo ma un img si "sballa" tutto 
+//problema che per ora prendono anche le replies
