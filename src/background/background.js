@@ -9,5 +9,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             console.log("Ricevuta richiesta di salvare il post");
             chrome.tabs.sendMessage(sender.tab.id, { action: "savePost", post: message.post });
             break;
+        case 'finishedScrape':
+            console.log("Ricevuta notifica di fine scraping");
+            chrome.runtime.sendMessage({action: "finischedScrape"});
+            break;
     }
 })

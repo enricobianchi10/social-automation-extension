@@ -24,7 +24,7 @@ class CommentNavigator {
                 console.log("Caricati primi commenti");
             } 
             catch {
-                console.error("Commenti non presenti o errore nel loro caricamento");
+                console.log("Commenti non presenti o errore nel loro caricamento");
             }
         }   
         while(this.hasNewCommBtn){

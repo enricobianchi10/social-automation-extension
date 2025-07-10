@@ -1,27 +1,20 @@
 <!DOCTYPE html>
-<html>
-<head><title>Automate some Facebook</title></head>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Estensione per l'automazione di Instagram</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
 <body>
-  <!--
-  <button id="gotoInstagram">Go to Instagram</button>
-  <button id="saveDom" style="display:none;">Salva DOM pagina Instagram</button>
-  <div id="status"></div>
-  <div id="login-container" style="display:none;">
-    <h2>Accesso Instagram</h2>
-    <form id="loginForm">
-      <label for="username">Username</label>
-      <input type="text" id="username" name="username" required />
+  <h1>Raccolta Dati</h1>
 
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" required />
+  <div id="messageContainer"></div>
 
-      <button type="submit">Login</button>
-    </form>
-  </div>
-  -->
-  <button id="savePost">Salva Post del profilo</button>
-  <h2>Post salvati:</h2>
-  <div id="postContainer"></div>
+  <button id="getPost" style="display:none;">Inizia raccolta dati</button>
+
+  <div id="statusContainer"></div>
+
   <script src="popup.js"></script>
 </body>
 </html>

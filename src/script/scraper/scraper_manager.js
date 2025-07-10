@@ -10,6 +10,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 await postNavigator.goToNextPost();
             }
             console.log("Terminato scraping dei post");
+            chrome.runtime.sendMessage({ action: "finishedScrape"});
     }
 })
 
