@@ -1,7 +1,7 @@
 //xpath per bottone avanti '//button[.//*[@aria-label="Avanti"]]' (si può anche fare inerente al testo dentro e non aria-label)
 class PostNavigator {
     constructor(post_url){
-        this._post = post_url;
+        this._postUrl = post_url;
         this._hasNextBtn = true;
     }
 
@@ -13,12 +13,12 @@ class PostNavigator {
         this._hasNextBtn = hasNextBtn;
     }
 
-    get post(){
-        return this._post;
+    get postUrl(){
+        return this._postUrl;
     }
 
-    set post(post_url){
-        this._post = post_url;
+    set postUrl(post_url){
+        this._postUrl = post_url;
     }
 
     async goToNextPost(){
@@ -30,7 +30,14 @@ class PostNavigator {
         else {
             console.log("Pulsante per prossimo post trovato!");
             nextBtn.click();
-            await delay(3000); //si può probabilmente migliorare con l'utilizzo di MutationObserver
+            //await delay(3000); //per verificare che è stato caricato il post nuovo verificare cambio url
+            try {
+                await ChangeDetector.waitForUrlChanges(this.postUrl);
+                console.log("Nuovo post raggiunto");
+            }
+            catch {
+                console.error("Errore nel raggiungimento del nuovo post");
+            }
         }
     } 
 }
