@@ -32,7 +32,7 @@ class ChangeDetector {
                 timeout = setTimeout(() => {
                     observer.disconnect();
                     resolve();
-                }, 3000); //se non ci sono cambiamenti per 1 secodno terminato caricamento dei commenti richiesto
+                }, 2000); //se non ci sono cambiamenti per 2 secondi terminato caricamento dei commenti richiesto
             })
 
             observer.observe(document.body, config);
@@ -40,7 +40,7 @@ class ChangeDetector {
             setTimeout(() => {
                 observer.disconnect();
                 reject();
-            }, 5000); //se dopo 5 secondi non rileva cambiamenti o non ci sono commenti o problemi di caricaemnto 
+            }, 10000); //se dopo 10 secondi non rileva cambiamenti o non ci sono commenti o problemi di caricaemnto 
 
         })
     }

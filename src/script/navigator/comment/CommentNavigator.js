@@ -16,6 +16,7 @@ class CommentNavigator {
     }
 
     async loadAllComments(){ //da aggiungere un metodo che rileva se ci sono commenti o no e aspetta il caricamento 
+        
         this.hasNewCommBtn = true;
         if(!ChangeDetector.checkIfCommentLoad()){ // viene fatto il check se i primi commenti sono già stati caricati o meno e nel caso aspetta il caricamento
             try {
