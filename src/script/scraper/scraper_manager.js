@@ -6,7 +6,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             while(postNavigator.hasNextBtn){
                 let post = await scrapeSinglePost(); //scrapePost giusto static?
                 chrome.runtime.sendMessage({ action: "savePost", post: post });
-                postNavigator.post = post.url;
+                postNavigator.postUrl = post.url;
                 await postNavigator.goToNextPost();
             }
             console.log("Terminato scraping dei post");
