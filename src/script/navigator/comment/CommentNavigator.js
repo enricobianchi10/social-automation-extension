@@ -26,7 +26,7 @@ class CommentNavigator {
             else {
                 console.log("Pulsante per caricare commenti trovato!");
                 nextCommBtn.click();
-                await delay(3000); //si può probabilmente migliorare con l'utilizzo di MutationObserver
+                await delay(5000); //si può probabilmente migliorare con l'utilizzo di MutationObserver
             }
         }
     } 
