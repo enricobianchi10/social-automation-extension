@@ -1,6 +1,7 @@
+//xpath per bottone avanti '//button[.//*[@aria-label="Avanti"]]' (si può anche fare inerente al testo dentro e non aria-label)
 class PostNavigator {
     constructor(post_url){
-        this._post = post_url;
+        this._postUrl = post_url;
         this._hasNextBtn = true;
     }
 
@@ -12,30 +13,33 @@ class PostNavigator {
         this._hasNextBtn = hasNextBtn;
     }
 
-    get post(){
-        return this._post;
+    get postUrl(){
+        return this._postUrl;
     }
 
-    set post(post_url){
-        this._post = post_url;
-    }
-
-    async delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+    set postUrl(post_url){
+        this._postUrl = post_url;
     }
 
     async goToNextPost(){
-        const nextBtn = document.querySelectorAll(".x197sbye .x1useyqa")[1]; //selettore per andare avanti di post
+        const nextBtn = XPathManager.getOne('//button[.//*[@aria-label="Avanti"]]'); //selettore per andare avanti di post
         if(!nextBtn){
             console.log("Nessun pulsante di prossimo post trovato");
             this.hasNextBtn = false;
-            return false;
         }
         else {
             console.log("Pulsante per prossimo post trovato!");
             nextBtn.click();
-            await this.delay(3000); //si può probabilmente migliorare con l'utilizzo di MutationObserver
-            return true;
+            //await delay(3000); //per verificare che è stato caricato il post nuovo verificare cambio url
+            try {
+                await ChangeDetector.waitForUrlChanges(this.postUrl);
+                console.log("Nuovo post raggiunto");
+            }
+            catch (err) {
+                console.log("Errore nel raggiungimento del nuovo post");
+                this.hasNextBtn = false;
+                throw err;
+            }
         }
     } 
 }

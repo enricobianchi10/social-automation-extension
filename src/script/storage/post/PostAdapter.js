@@ -4,13 +4,13 @@ class PostAdapter extends StorageService {
     }
 
     static async save(post){
-        await chrome.storage.local.set({ [post.url]: post });
+        await chrome.storage.local.set({ [post._url]: post });
     }
 
     static async get(url){
         const result = await chrome.storage.local.get(url);
         const post = result[url];
-        return new Post(post.url, post.author, post.comments);
+        return new Post(post._url, post._scr, post._caption, post._likes_number, post._comments);
     }
 }
 
