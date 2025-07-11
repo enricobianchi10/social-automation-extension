@@ -45,7 +45,7 @@ class ChangeDetector {
         })
     }
 
-    static checkIfCommentLoad(){
-        return (XPathManager.getAll(SELECTORS.commentText).length > 0); //se lunghezza lista = 0 primi commenti ancora da caricare
+    static checkIfCommentLoad(social){
+        return (XPathManager.getAll(SELECTORS[social].commentText).length > 0); //se lunghezza lista = 0 primi commenti ancora da caricare
     }
 }

@@ -2,13 +2,14 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     switch (message.action){
         case "scrapePost":
             console.log("Ricevuta richiesta di scraping di tutti i post");
+            let social = message.social;
             let postNavigator = new PostNavigator();
             while(postNavigator.hasNextBtn){
-                let post = await scrapeSinglePost(); //scrapePost giusto static?
+                let post = await scrapeSinglePost(social); //scrapePost giusto static?
                 chrome.runtime.sendMessage({ action: "savePost", post: post });
                 postNavigator.postUrl = post.url;
                 try {
-                    await postNavigator.goToNextPost();
+                    await postNavigator.goToNextPost(social);
                 }
                 catch(err) {
                     chrome.runtime.sendMessage({
@@ -26,16 +27,16 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
 })
 
-async function scrapeSinglePost(){
-    let post = await PostScraper.scrapePost();
+async function scrapeSinglePost(social){
+    let post = await PostScraper.scrapePost(social);
     console.log("Trovato URL del post:", post.url);
     console.log("Trovato SRC immagine del post:", post.src);
     console.log("Trovata caption del post:", post.caption);
     console.log("Trovato numero likes del post:", post.likesNumber);
     //ora andrebbe fatto scraping dei commenti tramite comment scraper e poi aggiungerli al post generato da postScraper
     let commentNavigator = new CommentNavigator();
-    await commentNavigator.loadAllComments();
-    let comments = await CommentScraper.scrapeComment();
+    await commentNavigator.loadAllComments(social);
+    let comments = await CommentScraper.scrapeComment(social);
     post.comments = comments;
     console.log("Trovati commenti al post:", post.comments);
     return post;

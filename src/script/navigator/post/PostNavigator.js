@@ -21,8 +21,8 @@ class PostNavigator {
         this._postUrl = post_url;
     }
 
-    async goToNextPost(){
-        const nextBtn = XPathManager.getOne(SELECTORS.newPostButton); //selettore per andare avanti di post
+    async goToNextPost(social){
+        const nextBtn = XPathManager.getOne(SELECTORS[social].newPostButton); //selettore per andare avanti di post
         if(!nextBtn){
             console.log("Nessun pulsante di prossimo post trovato");
             this.hasNextBtn = false;

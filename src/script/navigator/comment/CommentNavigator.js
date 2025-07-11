@@ -15,10 +15,10 @@ class CommentNavigator {
         this._hasNewCommBtn = hasNewCommBtn;
     }
 
-    async loadAllComments(){ //da aggiungere un metodo che rileva se ci sono commenti o no e aspetta il caricamento 
+    async loadAllComments(social){ //da aggiungere un metodo che rileva se ci sono commenti o no e aspetta il caricamento 
         
         this.hasNewCommBtn = true;
-        if(!ChangeDetector.checkIfCommentLoad()){ // viene fatto il check se i primi commenti sono già stati caricati o meno e nel caso aspetta il caricamento
+        if(!ChangeDetector.checkIfCommentLoad(social)){ // viene fatto il check se i primi commenti sono già stati caricati o meno e nel caso aspetta il caricamento
             try {
                 await ChangeDetector.waitForCommentLoad();
                 console.log("Caricati primi commenti");
@@ -28,7 +28,7 @@ class CommentNavigator {
             }
         }   
         while(this.hasNewCommBtn){
-            const nextCommBtn = XPathManager.getOne(SELECTORS.newCommentsButton);
+            const nextCommBtn = XPathManager.getOne(SELECTORS[social].newCommentsButton);
             if(!nextCommBtn){
                 console.log("Nessun pulsante di nuovi commenti");
                 this.hasNewCommBtn = false;

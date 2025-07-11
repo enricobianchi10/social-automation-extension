@@ -1,10 +1,11 @@
 let oldPostNumber = 0;
+let social = "";
 
 document.getElementById("getPost").addEventListener("click", async () => {
-    let storage = await chrome.storage.local.get(null);
-    oldPostNumber = Object.keys(storage).length;
+    //let storage = await chrome.storage.local.get(null);
+    //oldPostNumber = Object.keys(storage).length;
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    chrome.runtime.sendMessage({action: "getPost", tabId: tab.id});
+    chrome.runtime.sendMessage({action: "getPost", tabId: tab.id, social: social});
     const messageContainer = document.getElementById("messageContainer");
     messageContainer.innerHTML = "";
     document.getElementById("getPost").style.display = 'none';
@@ -21,7 +22,13 @@ document.getElementById("getPost").addEventListener("click", async () => {
 document.addEventListener("DOMContentLoaded", async () => {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   const url = tab.url;
-  if(url.includes("instagram.com/p")){
+  if(url.includes("instagram.com/p") || url.includes("facebook.com/photo") || url.includes("facebook.com/photo.php")){
+    if (url.includes("instagram.com/p")){
+      social = "instagram";
+    }
+    else {
+      social = "facebook";
+    }
     const messageContainer = document.getElementById("messageContainer");
     messageContainer.innerHTML = "";
     const message = document.createElement("p");
