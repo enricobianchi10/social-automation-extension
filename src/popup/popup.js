@@ -43,6 +43,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         case "finishedScrape":
             const messageContainer = document.getElementById("messageContainer");
             const statusContainer = document.getElementById("statusContainer");
+            let errorContainer = document.getElementById("errorContainer");
+            errorContainer.innerhTML = "";
             messageContainer.innerHTML = "";
             statusContainer.innerHTML = "";
             const statusTitle = document.createElement("h2");
@@ -54,7 +56,25 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 <p>Numero di post raccolti prima: ${oldPostNumber}</p>
                 <p>Nuovi post aggiunti: ${newPostNumber - oldPostNumber}</p>
                 <p>Totale attuale: ${newPostNumber}</p> `; */
+            const statusLink = document.createElement("a");
+            statusLink.href = message.lastPost;
+            statusLink.textContent = "Clicca qui per raggiungere l'ultimo post salvato!";
+            statusLink.target = "_blank";
             statusContainer.appendChild(statusTitle);
+            statusContainer.appendChild(statusLink);
            // statusContainer.appendChild(statusDiv);
+           break;
+        case "showError":
+          errorContainer = document.getElementById("errorContainer");
+          errorContainer.innerHTML = "";
+          const errorTitle = document.createElement("h2");
+          errorTitle.textContent = message.error.message;
+          const errorLink = document.createElement("a");
+          errorLink.href = message.error.url;
+          errorLink.textContent = "Clicca qui per raggiungere l'ultimo post salvato!";
+          errorLink.target = "_blank";
+          errorContainer.appendChild(errorTitle);
+          errorContainer.appendChild(errorLink);
+
     }
 })

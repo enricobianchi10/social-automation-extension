@@ -12,7 +12,7 @@ class ChangeDetector {
 
             setTimeout(() => {
                 clearInterval(interval);
-                reject();
+                reject(new UrlError(oldUrl));
             }, 10000); //se non carica nuovo url dopo 10 secondi reject 
         }
     )}

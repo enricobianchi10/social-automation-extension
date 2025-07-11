@@ -11,7 +11,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             break;
         case 'finishedScrape':
             console.log("Ricevuta notifica di fine scraping");
-            chrome.runtime.sendMessage({action: "finischedScrape"});
+            chrome.runtime.sendMessage({action: "finishedScrape", lastPost: message.lastPost});
+            break;
+        case 'showError':
+            console.log("Ricevuta notifica di mostrare gli errori");
+            chrome.runtime.sendMessage({action: "showError", error: message.error});
             break;
     }
 })

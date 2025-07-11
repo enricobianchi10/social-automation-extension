@@ -7,10 +7,22 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 let post = await scrapeSinglePost(); //scrapePost giusto static?
                 chrome.runtime.sendMessage({ action: "savePost", post: post });
                 postNavigator.postUrl = post.url;
-                await postNavigator.goToNextPost();
+                try {
+                    await postNavigator.goToNextPost();
+                }
+                catch(err) {
+                    chrome.runtime.sendMessage({
+                        action: "showError",
+                        error: {
+                            message: err.message,
+                            url: err.url
+                        }
+                    });
+                    return;
+                }
             }
             console.log("Terminato scraping dei post");
-            chrome.runtime.sendMessage({ action: "finishedScrape"});
+            chrome.runtime.sendMessage({ action: "finishedScrape", lastPost: postNavigator.postUrl});
     }
 })
 

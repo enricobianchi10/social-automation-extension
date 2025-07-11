@@ -35,8 +35,10 @@ class PostNavigator {
                 await ChangeDetector.waitForUrlChanges(this.postUrl);
                 console.log("Nuovo post raggiunto");
             }
-            catch {
-                console.error("Errore nel raggiungimento del nuovo post");
+            catch (err) {
+                console.log("Errore nel raggiungimento del nuovo post");
+                this.hasNextBtn = false;
+                throw err;
             }
         }
     } 
