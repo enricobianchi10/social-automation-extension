@@ -6,11 +6,11 @@ class PostScraper {
     static async scrapePost(){
         console.log("Inizio scraping del post");
         const postUrl = window.location.href.split('?')[0];
-        const postImg = XPathManager.getOne('//article//img[@alt and not(ancestor::a) and not(contains(@alt, "profilo"))]');
+        const postImg = XPathManager.getOne(SELECTORS.postImage);
         if(!postImg) console.log("Scrape di un video");
         const postImgSrc = postImg?.src || "Video";
-        const postCaption = XPathManager.getOne('//article//h1')?.innerText || "Nessuna caption"; //selettore caption post
-        const postLikes = XPathManager.getOne('//article//section//a/span[text()]/span')?.innerText || "0";
+        const postCaption = XPathManager.getOne(SELECTORS.postCaption)?.innerText || "Nessuna caption"; //selettore caption post
+        const postLikes = XPathManager.getOne(SELECTORS.postLikesNumber)?.innerText || "0";
         return new Post(postUrl, postImgSrc, postCaption, postLikes, []);
     }
 }

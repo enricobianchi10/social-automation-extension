@@ -22,7 +22,7 @@ class PostNavigator {
     }
 
     async goToNextPost(){
-        const nextBtn = XPathManager.getOne('//button[.//*[@aria-label="Avanti"]]'); //selettore per andare avanti di post
+        const nextBtn = XPathManager.getOne(SELECTORS.newPostButton); //selettore per andare avanti di post
         if(!nextBtn){
             console.log("Nessun pulsante di prossimo post trovato");
             this.hasNextBtn = false;

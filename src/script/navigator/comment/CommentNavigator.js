@@ -28,7 +28,7 @@ class CommentNavigator {
             }
         }   
         while(this.hasNewCommBtn){
-            const nextCommBtn = XPathManager.getOne('//article//button[.//*[@aria-label="Carica altri commenti"]]');
+            const nextCommBtn = XPathManager.getOne(SELECTORS.newCommentsButton);
             if(!nextCommBtn){
                 console.log("Nessun pulsante di nuovi commenti");
                 this.hasNewCommBtn = false;

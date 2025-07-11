@@ -6,8 +6,8 @@
 class CommentScraper {
     static async scrapeComment(){
         console.log("Inizio scraping dei commenti");
-        const listTextComment = XPathManager.getAll('//article//h3/following-sibling::div[1]/span');
-        const listAuthorComment = XPathManager.getAll('//article//h3[not(following-sibling::div[1]/img)]');
+        const listTextComment = XPathManager.getAll(SELECTORS.commentText);
+        const listAuthorComment = XPathManager.getAll(SELECTORS.commentAuthor);
         console.log("Trovata lista testi commenti di lunghezza:", listTextComment.length);
         console.log("Trovata lista autori commenti di lunghezza:", listAuthorComment.length);
         let comments = [];

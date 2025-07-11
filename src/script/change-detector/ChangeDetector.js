@@ -46,6 +46,6 @@ class ChangeDetector {
     }
 
     static checkIfCommentLoad(){
-        return (XPathManager.getAll('//article//h3/following-sibling::div[1]/span').length > 0); //se lunghezza lista = 0 primi commenti ancora da caricare
+        return (XPathManager.getAll(SELECTORS.commentText).length > 0); //se lunghezza lista = 0 primi commenti ancora da caricare
     }
 }
