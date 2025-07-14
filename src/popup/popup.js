@@ -19,6 +19,26 @@ document.getElementById("getPost").addEventListener("click", async () => {
     statusContainer.appendChild(statusP);
 })
 
+document.getElementById("downloadData").addEventListener("click", async () => {
+    // const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    const downloadContainer = document.getElementById("downloadContainer");
+    downloadContainer.innerHTML = "";
+    try {
+      await downloadData();
+      const downloadTitle = document.createElement("h2");
+      downloadTitle.textContent = "Download terminato con successo!";
+      downloadContainer.appendChild(downloadTitle);
+    }
+    catch (err) {
+      downloadContainer.style.display = "none";
+      const errorContainer = document.getElementById("errorContainer");
+      errorContainer.innerHTML = "";
+      const errorTitle = document.createElement("h2");
+      errorTitle.textContent = "Errore nel download: " + err.message;
+      errorContainer.appendChild(errorTitle);
+    }
+})
+
 document.addEventListener("DOMContentLoaded", async () => {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   const url = tab.url;
@@ -46,11 +66,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-    switch (message.action){
+  const messageContainer = document.getElementById("messageContainer");
+  const statusContainer = document.getElementById("statusContainer");
+  const errorContainer = document.getElementById("errorContainer");
+  switch (message.action){
         case "finishedScrape":
-            const messageContainer = document.getElementById("messageContainer");
-            const statusContainer = document.getElementById("statusContainer");
-            let errorContainer = document.getElementById("errorContainer");
             errorContainer.innerHTML = "";
             messageContainer.innerHTML = "";
             statusContainer.innerHTML = "";
@@ -70,19 +90,35 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             statusContainer.appendChild(statusTitle);
             statusContainer.appendChild(statusLink);
             document.getElementById("downloadContainer").style.display = 'block';
-           // statusContainer.appendChild(statusDiv);
-           break;
+            // statusContainer.appendChild(statusDiv);
+            break;
         case "showError":
-          errorContainer = document.getElementById("errorContainer");
-          errorContainer.innerHTML = "";
-          const errorTitle = document.createElement("h2");
-          errorTitle.textContent = message.error.message;
-          const errorLink = document.createElement("a");
-          errorLink.href = message.error.url;
-          errorLink.textContent = "Clicca qui per raggiungere l'ultimo post salvato!";
-          errorLink.target = "_blank";
-          errorContainer.appendChild(errorTitle);
-          errorContainer.appendChild(errorLink);
-
+            errorContainer.innerHTML = "";
+            const errorTitle = document.createElement("h2");
+            errorTitle.textContent = message.error.message;
+            const errorLink = document.createElement("a");
+            errorLink.href = message.error.url;
+            errorLink.textContent = "Clicca qui per raggiungere l'ultimo post salvato!";
+            errorLink.target = "_blank";
+            errorContainer.appendChild(errorTitle);
+            errorContainer.appendChild(errorLink);
+            break;
     }
 })
+
+
+async function downloadData() {
+  const data = await chrome.storage.local.get(null);
+  const json_data = JSON.stringify(data, null, 2);
+  const blob = new Blob([json_data], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  await chrome.downloads.download({
+    url: url,
+    filename: "dati_post.json",
+    saveAs: true,
+  });
+
+  // Dopo il download, rilascia l'URL per liberare memoria
+  URL.revokeObjectURL(url);
+}
