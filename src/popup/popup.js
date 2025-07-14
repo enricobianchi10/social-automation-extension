@@ -51,7 +51,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             const messageContainer = document.getElementById("messageContainer");
             const statusContainer = document.getElementById("statusContainer");
             let errorContainer = document.getElementById("errorContainer");
-            errorContainer.innerhTML = "";
+            errorContainer.innerHTML = "";
             messageContainer.innerHTML = "";
             statusContainer.innerHTML = "";
             const statusTitle = document.createElement("h2");
@@ -69,6 +69,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             statusLink.target = "_blank";
             statusContainer.appendChild(statusTitle);
             statusContainer.appendChild(statusLink);
+            document.getElementById("downloadContainer").style.display = 'block';
            // statusContainer.appendChild(statusDiv);
            break;
         case "showError":

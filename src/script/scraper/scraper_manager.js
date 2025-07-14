@@ -6,7 +6,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             let postNavigator = new PostNavigator();
             while(postNavigator.hasNextBtn){
                 let post = await scrapeSinglePost(social); //scrapePost giusto static?
-                chrome.runtime.sendMessage({ action: "savePost", post: post });
+                await sendSavePostMessage(post); //per aspettare il termine del salvataggio prima di proseguire
                 postNavigator.postUrl = post.url;
                 try {
                     await postNavigator.goToNextPost(social);
@@ -40,4 +40,12 @@ async function scrapeSinglePost(social){
     post.comments = comments;
     console.log("Trovati commenti al post:", post.comments);
     return post;
+}
+
+function sendSavePostMessage(post) {
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage({ action: "savePost", post: post }, (response) => {
+      resolve(response);
+    });
+  });
 }
