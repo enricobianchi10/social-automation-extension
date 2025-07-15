@@ -37,6 +37,21 @@ document.getElementById("downloadData").addEventListener("click", async () => {
     }
 })
 
+document.getElementById("postData").addEventListener("click", () => {
+    const postDataBtn = document.getElementById("postData");
+    postDataBtn.style.display = 'none';
+    const downloadContainer = document.getElementById("downloadContainer");
+    const postP = document.createElement("p");
+    postP.textContent = "Elaborazione dati raccolti in corso...";
+    downloadContainer.appendChild(postP);
+    chrome.runtime.sendMessage({action: "postData"}, (response) => {
+        postP.textContent = "Elaborazione dati completata";
+        const responseP = document.createElement("p");
+        responseP.textContent = response.data;
+        downloadContainer.appendChild(responseP);
+    })
+})
+
 document.addEventListener("DOMContentLoaded", async () => {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   const url = tab.url;

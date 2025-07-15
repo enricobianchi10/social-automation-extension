@@ -19,5 +19,29 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             console.log("Ricevuta notifica di mostrare gli errori");
             chrome.runtime.sendMessage({action: "showError", error: message.error});
             break;
+        case 'postData':
+            console.log("Ricevuta richiesta di elaborazione dei dati");
+            const sendData = async () => {
+                let result = await chrome.storage.local.get("postList");
+                let postData = result.postList;
+                fetch('https://webhook.site/10a41ee8-38a2-4384-bedb-74fbb07e9cbc', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(postData)
+                })
+                .then(res => res.text())
+                .then(data => {
+                    console.log('Risposta dal server:', data);
+                    sendResponse({data: data });
+                })
+                .catch(err => {
+                    console.log('Errore fetch:', err);
+                    sendResponse({data: err });
+                });
+            }
+            sendData();
+            return true;
     }
 })
