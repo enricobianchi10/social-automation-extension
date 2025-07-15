@@ -4,7 +4,7 @@
 //autori commenti migliorato per non prendere replies '//article//h3[not(following-sibling::div[1]/img) and not(ancestor::ul/ancestor::li/ancestor::ul)]'
 
 class CommentScraper {
-    static async scrapeComment(social){
+    static scrapeComment(social){
         console.log("Inizio scraping dei commenti");
         const listTextComment = XPathManager.getAll(SELECTORS[social].commentText);
         const listAuthorComment = XPathManager.getAll(SELECTORS[social].commentAuthor);

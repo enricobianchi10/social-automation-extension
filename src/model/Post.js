@@ -1,10 +1,15 @@
 class Post {
-    constructor(url, src, caption, likes_number, comments){
+    constructor(number, url, src, caption, likes_number, comments){
+        this._number = number;
         this._url = url;
         this._src = src;
         this._caption = caption;
         this._likes_number = likes_number;
         this._comments = comments;
+    }
+
+    get number() {
+        return this._number;
     }
 
     get url() {
@@ -29,5 +34,9 @@ class Post {
 
     set comments(comments){
         this._comments = comments;
+    }
+
+    set number(number){
+        this._number = number;
     }
 }

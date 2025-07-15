@@ -1,12 +1,15 @@
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     switch (message.action){
         case "scrapePost":
-            console.log("Ricevuta richiesta di scraping di tutti i post");
             let social = message.social;
+            console.log("Ricevuta richiesta di scraping di tutti i post");
+            let postNumber = PostScraper.getPostNumber(social);
+            console.log("Trovato numero totale dei post:", postNumber);
             let postNavigator = new PostNavigator();
             while(postNavigator.hasNextBtn){
-                let post = await scrapeSinglePost(social); //scrapePost giusto static?
+                let post = await scrapeSinglePost(social, postNumber); 
                 await sendSavePostMessage(post); //per aspettare il termine del salvataggio prima di proseguire
+                postNumber = postNumber - 1;
                 try {
                     await postNavigator.goToNextPost(social);
                 }
@@ -26,8 +29,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
 })
 
-async function scrapeSinglePost(social){
-    let post = await PostScraper.scrapePost(social);
+async function scrapeSinglePost(social, postNumber){
+    let post = PostScraper.scrapePost(social, postNumber);
+    console.log("Numero del post:", post.number);
     console.log("Trovato URL del post:", post.url);
     console.log("Trovato SRC immagine del post:", post.src);
     console.log("Trovata caption del post:", post.caption);

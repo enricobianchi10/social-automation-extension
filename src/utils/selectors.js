@@ -6,6 +6,11 @@ const SELECTORS = {
         newPostButton: '//button[.//*[@aria-label="Avanti"]]', //xpath per ottenere il pulsante per andare al prossimo post
         postImage: '//article//img[@alt and not(ancestor::a) and not(contains(@alt, "profilo"))]', //xpath per ottenere l'immagine del post
         postCaption: '//article//h1', //xpath per ottenere la caption del post
-        postLikesNumber: '//article//section//a/span[text()]/span' //xpath per ottenere il numero dei like al post
+        postLikesNumber: '//article//section//a/span[text()]/span', //xpath per ottenere il numero dei like al post
+        postNumber: '//li/div/span/span' //xpath per ottenere numero di post
     }
 }
+
+//xpath bottone replies '//article//button[.//*[contains(@aria-label, "Visualizza le risposte")]]'
+//xpath che prende il testo di tutte le replies '//article//ul/li/ul//div/span[text()]'
+//xpath per autori replies '//article//ul/li/ul//div/h3[not(following-sibling::div[1]/img)]'
