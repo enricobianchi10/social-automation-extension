@@ -1,8 +1,7 @@
 class Comment {
-    constructor(author, text, replies){
+    constructor(author, text){
         this._author = author;
         this._text = text;
-        this._replies = replies;
     }
 
     get author(){
@@ -11,9 +10,5 @@ class Comment {
 
     get text() {
         return this._text;
-    }
-
-    get replies() {
-        return this._replies;
     }
 }

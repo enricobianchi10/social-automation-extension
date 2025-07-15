@@ -14,7 +14,7 @@ class CommentScraper {
         listTextComment.forEach((node,index) => {
             const text = node.innerText;
             const author = listAuthorComment[index]?.innerText || "Autore non trovato";
-            const comment = new Comment(author, text, []);
+            const comment = new Comment(author, text);
             comments.push(comment);
         });
 

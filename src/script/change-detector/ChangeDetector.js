@@ -22,12 +22,6 @@ class ChangeDetector {
             let timeout = null;
             const config = { childList: true, subtree: true };
             const observer = new MutationObserver(() => {
-                /*for(const mutation of mutationList){
-                    if(mutation.addedNodes.length > 0){  
-                    observer.disconnect();
-                    resolve();
-                    }
-                }*/
                 if(timeout) clearTimeout(timeout);
                 timeout = setTimeout(() => {
                     observer.disconnect();

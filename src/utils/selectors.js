@@ -7,15 +7,5 @@ const SELECTORS = {
         postImage: '//article//img[@alt and not(ancestor::a) and not(contains(@alt, "profilo"))]', //xpath per ottenere l'immagine del post
         postCaption: '//article//h1', //xpath per ottenere la caption del post
         postLikesNumber: '//article//section//a/span[text()]/span' //xpath per ottenere il numero dei like al post
-    },
-
-    facebook: {
-        commentText: '//div[contains(@aria-label, "Commento")]//span[@dir]/div',
-        newCommentsButton: '//span[contains(text(), "Visualizza altri")]',
-        commentAuthor: '//div[contains(@aria-label, "Commento")]//a/span',
-        newPostButton: '//div[@aria-label="Foto successiva"]//i',
-        postImage: '//img[@data-visualcompletion]',
-        postCaption: '//div[@role="complementary"]//span[text() and @dir and not(ancestor::div[contains(@class,"html-div")])]', //complessa, forse migliorabile
-        postLikesNumber: '//span[preceding-sibling::*[text()]]//span[text()]'
     }
 }

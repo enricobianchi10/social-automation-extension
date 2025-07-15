@@ -1,5 +1,6 @@
-let oldPostNumber = 0;
 let social = "";
+let currentDownloadId = null;
+let urlBlob = null;
 
 document.getElementById("getPost").addEventListener("click", async () => {
     //let storage = await chrome.storage.local.get(null);
@@ -22,17 +23,14 @@ document.getElementById("getPost").addEventListener("click", async () => {
 document.getElementById("downloadData").addEventListener("click", async () => {
     // const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     const downloadContainer = document.getElementById("downloadContainer");
+    const errorContainer = document.getElementById("errorContainer");
     downloadContainer.innerHTML = "";
+    errorContainer.innerHTML = "";
     try {
       await downloadData();
-      const downloadTitle = document.createElement("h2");
-      downloadTitle.textContent = "Download terminato con successo!";
-      downloadContainer.appendChild(downloadTitle);
     }
     catch (err) {
       downloadContainer.style.display = "none";
-      const errorContainer = document.getElementById("errorContainer");
-      errorContainer.innerHTML = "";
       const errorTitle = document.createElement("h2");
       errorTitle.textContent = "Errore nel download: " + err.message;
       errorContainer.appendChild(errorTitle);
@@ -111,14 +109,46 @@ async function downloadData() {
   const data = await chrome.storage.local.get(null);
   const json_data = JSON.stringify(data, null, 2);
   const blob = new Blob([json_data], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
+  urlBlob = URL.createObjectURL(blob);
 
-  await chrome.downloads.download({
-    url: url,
+  currentDownloadId = await chrome.downloads.download({
+    url: urlBlob,
     filename: "dati_post.json",
     saveAs: true,
   });
-
-  // Dopo il download, rilascia l'URL per liberare memoria
-  URL.revokeObjectURL(url);
 }
+
+chrome.downloads.onChanged.addListener((delta) => {
+  const downloadContainer = document.getElementById("downloadContainer");
+  const errorContainer = document.getElementById("errorContainer");
+  downloadContainer.innerHTML = "";
+  errorContainer.innerHTML = "";
+  
+  if (delta.id !== currentDownloadId) return;
+  
+  if (delta.state?.current === "complete"){
+    const downloadTitle = document.createElement("h2");
+    downloadTitle.textContent = "Download terminato con successo!";
+    downloadContainer.appendChild(downloadTitle);
+    // Dopo il download, rilascia l'URL per liberare memoria
+    URL.revokeObjectURL(urlBlob);
+    urlBlob = null;
+    currentDownloadId = null;
+  }
+
+  if(delta.state?.current === "interrupted"){
+    const errorTitle = document.createElement("h2");
+    errorTitle.textContent = "Download interrotto!";
+    const errorP = document.createElement("p");
+    errorP.tectContent = "Errore:" + delta.error;
+    errorContainer.appendChild(errorTitle);
+    errorContainer.appendChild(errorP);
+    // Dopo il download, rilascia l'URL per liberare memoria
+    URL.revokeObjectURL(urlBlob);
+    urlBlob = null;
+    currentDownloadId = null;
+  }
+})
+
+
+

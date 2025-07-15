@@ -7,7 +7,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             while(postNavigator.hasNextBtn){
                 let post = await scrapeSinglePost(social); //scrapePost giusto static?
                 await sendSavePostMessage(post); //per aspettare il termine del salvataggio prima di proseguire
-                postNavigator.postUrl = post.url;
                 try {
                     await postNavigator.goToNextPost(social);
                 }

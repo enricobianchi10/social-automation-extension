@@ -34,6 +34,7 @@ class PostNavigator {
             try {
                 await ChangeDetector.waitForUrlChanges(this.postUrl);
                 console.log("Nuovo post raggiunto");
+                this.postUrl = window.location.href;
             }
             catch (err) {
                 console.log("Errore nel raggiungimento del nuovo post");
