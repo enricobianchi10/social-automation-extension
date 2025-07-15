@@ -11,6 +11,10 @@ const SELECTORS = {
     }
 }
 
-//xpath bottone replies '//article//button[.//*[contains(@aria-label, "Visualizza le risposte")]]'
-//xpath che prende il testo di tutte le replies '//article//ul/li/ul//div/span[text()]'
+//xpath bottone replies '//article//button[.//*[contains(text(), "Visualizza le risposte")]]' //sembra andare anche '//article//div/button'
 //xpath per autori replies '//article//ul/li/ul//div/h3[not(following-sibling::div[1]/img)]'
+
+//xpath per inserimento di un commento
+//xpath per trovare i button "Rispondi" '//article//button[.//*[contains(text(), "Rispondi")]]' oppure '//article//span/button/span'
+//xpath per area input commento '//article//textarea'
+//xpath per pulsante pubblica '//article//section//div[./*[contains(text(), "Pubblica")]]' oppure '//article//section//div[@role][./*[text()]]', con article e section che si possono omettere
