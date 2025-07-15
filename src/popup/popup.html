@@ -3,25 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Estensione per l'automazione social</title>
+  <title>Automazione Social</title>
   <link rel="stylesheet" href="popup.css" />
 </head>
 <body>
-  <h1>Raccolta Dati</h1>
+  <div class="popup-container">
+    <h1>Raccolta Dati</h1>
 
-  <div id="messageContainer"></div>
+    <div id="messageContainer" class="info-box"></div>
 
-  <button id="getPost" style="display:none;">Inizia raccolta dati</button>
+    <button id="getPost" class="btn primary" style="display:none;">Inizia raccolta dati</button>
 
-  <div id="statusContainer"></div>
+    <div id="statusContainer" class="status-box" style="display:none;"></div>
+    <div id="errorContainer" class="error-box" style="display:none;"></div>
 
-  <div id="errorContainer"></div>
-  
-  <div id="downloadContainer" style="display:none">
-    <p>Premendo sul pulsante seguente verrà effettuato il download dei dati raccolti in un file JSON</p>
-    <button id="downloadData">Scarica i dati raccolti</button>
+    <div id="downloadContainer" class="download-section" style="display:none">
+      <p class="info">Premendo sul pulsante seguente verrà effettuato il download dei dati raccolti in un file JSON</p>
+      <button id="downloadData" class="btn secondary">Scarica i dati raccolti</button>
+    </div>
   </div>
-
   <script src="popup.js"></script>
 </body>
 </html>

@@ -9,6 +9,7 @@ document.getElementById("getPost").addEventListener("click", async () => {
     chrome.runtime.sendMessage({action: "getPost", tabId: tab.id, social: social});
     const messageContainer = document.getElementById("messageContainer");
     messageContainer.innerHTML = "";
+    messageContainer.style.display = 'none';
     document.getElementById("getPost").style.display = 'none';
     const statusContainer = document.getElementById("statusContainer");
     statusContainer.innerHTML = "";
@@ -18,6 +19,7 @@ document.getElementById("getPost").addEventListener("click", async () => {
     statusP.textContent = "Attendi il termine della raccolta dei dati senza interagire con la pagina";
     statusContainer.appendChild(statusTitle);
     statusContainer.appendChild(statusP);
+    statusContainer.style.display = 'block';
 })
 
 document.getElementById("downloadData").addEventListener("click", async () => {
@@ -30,10 +32,10 @@ document.getElementById("downloadData").addEventListener("click", async () => {
       await downloadData();
     }
     catch (err) {
-      downloadContainer.style.display = "none";
       const errorTitle = document.createElement("h2");
       errorTitle.textContent = "Errore nel download: " + err.message;
       errorContainer.appendChild(errorTitle);
+      errorContainer.style.display = 'block';
     }
 })
 
@@ -88,6 +90,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             statusContainer.appendChild(statusTitle);
             statusContainer.appendChild(statusLink);
             document.getElementById("downloadContainer").style.display = 'block';
+            statusContainer.style.display = 'block';
+            messageContainer.style.display = 'none';
             // statusContainer.appendChild(statusDiv);
             break;
         case "showError":
@@ -100,6 +104,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             errorLink.target = "_blank";
             errorContainer.appendChild(errorTitle);
             errorContainer.appendChild(errorLink);
+            errorContainer.style.display = 'block';
+            messageContainer.style.display = 'none';
             break;
     }
 })
@@ -119,6 +125,7 @@ async function downloadData() {
 }
 
 chrome.downloads.onChanged.addListener((delta) => {
+  
   const downloadContainer = document.getElementById("downloadContainer");
   const errorContainer = document.getElementById("errorContainer");
   downloadContainer.innerHTML = "";
@@ -130,6 +137,7 @@ chrome.downloads.onChanged.addListener((delta) => {
     const downloadTitle = document.createElement("h2");
     downloadTitle.textContent = "Download terminato con successo!";
     downloadContainer.appendChild(downloadTitle);
+    downloadContainer.style.display = 'block';
     // Dopo il download, rilascia l'URL per liberare memoria
     URL.revokeObjectURL(urlBlob);
     urlBlob = null;
@@ -143,6 +151,7 @@ chrome.downloads.onChanged.addListener((delta) => {
     errorP.tectContent = "Errore:" + delta.error;
     errorContainer.appendChild(errorTitle);
     errorContainer.appendChild(errorP);
+    errorContainer.style.display = 'block';
     // Dopo il download, rilascia l'URL per liberare memoria
     URL.revokeObjectURL(urlBlob);
     urlBlob = null;
