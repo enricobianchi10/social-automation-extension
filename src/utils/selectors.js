@@ -7,7 +7,9 @@ const SELECTORS = {
         postImage: '//article//img[@alt and not(ancestor::a) and not(contains(@alt, "profilo"))]', //xpath per ottenere l'immagine del post
         postCaption: '//article//h1', //xpath per ottenere la caption del post
         postLikesNumber: '//article//section//a/span[text()]/span', //xpath per ottenere il numero dei like al post
-        postNumber: '//li/div/span/span' //xpath per ottenere numero di post
+        postNumber: '//li/div/span/span', //xpath per ottenere numero di post
+        profileLink: '//a//div[@aria-selected ="false"]/span[@role]', //xpath bottone per andare sul profilo
+        lastPostLink: '//div[1]/div[1]/a/div[2]' //xpath per trovare ultimo post pubblicato
     }
 }
 

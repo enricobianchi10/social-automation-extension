@@ -1,10 +1,11 @@
-let social = "";
+let social = "instagram";
 let currentDownloadId = null;
 let urlBlob = null;
+let instaTabId = null;
 
 document.getElementById("getPost").addEventListener("click", async () => {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    chrome.runtime.sendMessage({action: "getPost", tabId: tab.id, social: social});
+    chrome.runtime.sendMessage({action: "getPost", tabId: instaTabId, social: social});
     const messageContainer = document.getElementById("messageContainer");
     messageContainer.innerHTML = "";
     messageContainer.style.display = 'none';
@@ -38,27 +39,31 @@ document.getElementById("downloadData").addEventListener("click", async () => {
 })
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  const url = tab.url;
-  if(url.includes("instagram.com/p") || url.includes("facebook.com/photo") || url.includes("facebook.com/photo.php")){
-    if (url.includes("instagram.com/p")){
-      social = "instagram";
+  const tabs = await chrome.tabs.query({ url: "*://www.instagram.com/*"});
+  console.log("Lunghezza tabs:" + tabs.length);
+  if(tabs.length > 0){
+    instaTabId = await checkCookies(tabs);
+    if(instaTabId){
+      const messageContainer = document.getElementById("messageContainer");
+      messageContainer.innerHTML = "";
+      const message = document.createElement("p");
+      message.textContent = "Fai click sul pulsante per iniziare la raccolta dati dei post";
+      messageContainer.appendChild(message);
+      document.getElementById("getPost").style.display = 'block';
     }
-    else {
-      social = "facebook";
+    else{
+      const messageContainer = document.getElementById("messageContainer");
+      messageContainer.innerHTML = "";
+      const message = document.createElement("p");
+      message.textContent = "Effettua prima il login del profilo per abilitare la raccolta dati";
+      messageContainer.appendChild(message);
     }
-    const messageContainer = document.getElementById("messageContainer");
-    messageContainer.innerHTML = "";
-    const message = document.createElement("p");
-    message.textContent = "Fai click sul pulsante per iniziare la raccolta dati dei post";
-    messageContainer.appendChild(message);
-    document.getElementById("getPost").style.display = 'block';
   }
   else {
     const messageContainer = document.getElementById("messageContainer");
     messageContainer.innerHTML = "";
     const message = document.createElement("p");
-    message.textContent = "Raggiungi la pagina del profilo e fai click sul primo post per abilitare la raccolta dati";
+    message.textContent = "Apri una pagina di Instagram ed effettua il login del profilo per abilitare la raccolta dati";
     messageContainer.appendChild(message);
   }
 });
@@ -112,6 +117,31 @@ async function downloadData() {
     filename: "dati_post.json",
     saveAs: true,
   });
+}
+
+async function checkCookies(tabs){
+  
+  const nameCookies = ["sessionid", "ds_user_id"];
+  let validCookies = 0;
+  
+  for (const tab of tabs) {
+    for (const name of nameCookies) {
+      const cookie = await chrome.cookies.get({ url: tab.url, name: name });
+      if (cookie) {
+        console.log("La tab " + tab.url + " contiene il cookie " + cookie.name);
+        validCookies += 1;
+      }
+    }
+    console.log("Valore validCookies " + validCookies);
+    if(validCookies === 2){
+      console.log("Trovata tab valida: " + tab.url + " " + tab.id);
+      return tab.id;
+    }
+    else {
+      validCookies = 0;
+    }
+  }
+  return false;
 }
 
 chrome.downloads.onChanged.addListener((delta) => {

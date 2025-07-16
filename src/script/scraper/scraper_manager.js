@@ -3,6 +3,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         case "scrapePost":
             let social = message.social;
             console.log("Ricevuta richiesta di scraping di tutti i post");
+            await InstagramPageNavigator.goToProfile(social);
+            await InstagramPageNavigator.openLastPost(social);
             let postNumber = PostScraper.getPostNumber(social);
             console.log("Trovato numero totale dei post:", postNumber);
             let postNavigator = new PostNavigator();
