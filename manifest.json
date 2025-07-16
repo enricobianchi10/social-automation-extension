@@ -4,11 +4,17 @@
   "version": "0.0.1",
   "description": "Estensione Chrome per automatizzare l'interazione con i social network.",
   
+  "host_permissions": [
+    "*://www.instagram.com/*"
+  ],
+
   "permissions": [
     "storage",
     "activeTab",
     "downloads",
-    "scripting"
+    "scripting",
+    "cookies",
+    "tabs"
   ],
 
   "action": {
@@ -23,7 +29,7 @@
     {
       "matches": ["<all_urls>"],
       "js": ["src/utils/utils.js", "src/utils/selectors.js","src/errors/errors.js", "src/model/Post.js", "src/model/Comment.js", "src/script/manager/XPathManager.js", "src/script/change-detector/ChangeDetector.js", "src/script/storage/StorageService.js", "src/script/storage/post/PostAdapter.js", "src/script/scraper/post/PostScraper.js", "src/script/scraper/comment/CommentScraper.js", 
-      "src/script/navigator/post/PostNavigator.js", "src/script/navigator/comment/CommentNavigator.js", "src/script/scraper/scraper_manager.js", "src/script/storage/storage_manager.js"],
+      "src/script/navigator/post/PostNavigator.js", "src/script/navigator/comment/CommentNavigator.js", "src/script/navigator/InstagramPageNavigator.js", "src/script/scraper/scraper_manager.js", "src/script/storage/storage_manager.js"],
       "run_at": "document_idle"
     }
   ]

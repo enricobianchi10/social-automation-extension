@@ -42,5 +42,5 @@ class PostNavigator {
                 throw err;
             }
         }
-    } 
+    }
 }

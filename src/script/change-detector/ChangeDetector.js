@@ -17,7 +17,7 @@ class ChangeDetector {
         }
     )}
 
-    static async waitForCommentLoad(){
+    static async waitForLoading(){
         return new Promise((resolve, reject) => {
             let timeout = null;
             const config = { childList: true, subtree: true };
@@ -26,7 +26,7 @@ class ChangeDetector {
                 timeout = setTimeout(() => {
                     observer.disconnect();
                     resolve();
-                }, 2000); //se non ci sono cambiamenti per 2 secondi terminato caricamento dei commenti richiesto
+                }, 2000); //se non ci sono cambiamenti per 2 secondi terminato caricamento dei commenti/post richiesto
             })
 
             observer.observe(document.body, config);
@@ -35,11 +35,14 @@ class ChangeDetector {
                 observer.disconnect();
                 reject();
             }, 10000); //se dopo 10 secondi non rileva cambiamenti o non ci sono commenti o problemi di caricaemnto 
-
         })
     }
 
     static checkIfCommentLoad(social){
         return (XPathManager.getAll(SELECTORS[social].commentText).length > 0); //se lunghezza lista = 0 primi commenti ancora da caricare
+    }
+
+    static checkIfPostLoad(social){
+        return Boolean(XPathManager.getOne(SELECTORS[social].lastPostLink));
     }
 }

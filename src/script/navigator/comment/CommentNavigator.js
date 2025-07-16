@@ -20,7 +20,7 @@ class CommentNavigator {
         this.hasNewCommBtn = true;
         if(!ChangeDetector.checkIfCommentLoad(social)){ // viene fatto il check se i primi commenti sono già stati caricati o meno e nel caso aspetta il caricamento
             try {
-                await ChangeDetector.waitForCommentLoad();
+                await ChangeDetector.waitForLoading();
                 console.log("Caricati primi commenti");
             } 
             catch {
@@ -38,7 +38,7 @@ class CommentNavigator {
                 nextCommBtn.click();
                 //await delay(3000);
                 try { //pulsante per visualizzare i nuovi commenti premuto, aspetto che si carichino
-                    await ChangeDetector.waitForCommentLoad();
+                    await ChangeDetector.waitForLoading();
                     console.log("Caricati nuovi commenti");
                 } 
                 catch {
