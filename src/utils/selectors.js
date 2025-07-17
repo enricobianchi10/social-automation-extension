@@ -9,7 +9,7 @@ const SELECTORS = {
         postLikesNumber: '//article//section//a/span[text()]/span', //xpath per ottenere il numero dei like al post
         postNumber: '//li/div/span/span', //xpath per ottenere numero di post
         profileLink: '//a//div[@aria-selected ="false"]/span[@role]', //xpath bottone per andare sul profilo
-        lastPostLink: '//div[1]/div[1]/a/div[2]', //xpath per trovare ultimo post pubblicato
+        lastPostLink: '//div[1]/div[1]/a[div[2]]', //xpath per trovare ultimo post pubblicato
         repliesButton: './/span[.//*[contains(text(), "Rispondi")]]', //xpath per trovare il tasto Rispondi al commento (path relativo)
         repliesTextArea: '//article//textarea',
         publishCommentButton: './/div[contains(text(), "Pubblica")]',
