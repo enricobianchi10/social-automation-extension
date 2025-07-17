@@ -4,7 +4,7 @@ let urlBlob = null;
 let instaTabId = null;
 
 document.getElementById("getPost").addEventListener("click", async () => {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    //const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     chrome.runtime.sendMessage({action: "getPost", tabId: instaTabId, social: social});
     const messageContainer = document.getElementById("messageContainer");
     messageContainer.innerHTML = "";
@@ -16,6 +16,24 @@ document.getElementById("getPost").addEventListener("click", async () => {
     statusTitle.textContent = "Raccolta dati in corso...";
     const statusP = document.createElement("p");
     statusP.textContent = "Attendi il termine della raccolta dei dati senza interagire con la pagina";
+    statusContainer.appendChild(statusTitle);
+    statusContainer.appendChild(statusP);
+    statusContainer.style.display = 'block';
+})
+
+document.getElementById("publishComment").addEventListener("click", () => {
+    //const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    chrome.runtime.sendMessage({action: "publishComment", tabId: instaTabId, social: social});
+    const messageContainer = document.getElementById("messageContainer");
+    messageContainer.innerHTML = "";
+    messageContainer.style.display = 'none';
+    document.getElementById("publishComment").style.display = 'none';
+    const statusContainer = document.getElementById("statusContainer");
+    statusContainer.innerHTML = "";
+    const statusTitle = document.createElement("h2");
+    statusTitle.textContent = "Inserimento del commento in corso...";
+    const statusP = document.createElement("p");
+    statusP.textContent = "Attendi il termine dell'inserimento del commento senza interagire con la pagina";
     statusContainer.appendChild(statusTitle);
     statusContainer.appendChild(statusP);
     statusContainer.style.display = 'block';

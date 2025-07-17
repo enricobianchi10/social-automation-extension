@@ -19,5 +19,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             console.log("Ricevuta notifica di mostrare gli errori");
             chrome.runtime.sendMessage({action: "showError", error: message.error});
             break;
+        case 'publishComment':
+            console.log("Ricevuta richiesta di postare un commento");
+            chrome.tabs.sendMessage(message.tabId, {action: "publishComment", social: message.social});
+            break;
     }
 })
