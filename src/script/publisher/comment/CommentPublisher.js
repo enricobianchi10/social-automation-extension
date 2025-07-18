@@ -1,7 +1,18 @@
 class CommentPublisher {
     
     static async publishRepliesToComment(url_post, author_comment, text_comment, text_replies, social){
-        const commentBox = await Researcher.findBoxComment(url_post, author_comment, text_comment, social);
+        let commentBox;
+        try {
+            commentBox = await Researcher.findBoxComment(url_post, author_comment, text_comment, social);
+            if(!commentBox){
+                console.log("Commento non trovato");
+                return;
+            }
+        }
+        catch (err) {
+            console.log("ricevuto errore di raggiungimento nuovo post (da researcher)");
+            throw err;
+        }
         const repliesButton = commentBox.querySelector('button');
         if(!repliesButton) console.log("Pulsante per rispondere ad un commento non trovato");
         else console.log("Pulsante per rispondere ad un commento trovato!");
@@ -20,10 +31,9 @@ class CommentPublisher {
     }
 
     static #setTextComment(text_replies, textarea){
-        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
-        if(nativeInputValueSetter) console.log("trovato setter textarea value");
-        nativeInputValueSetter.call(textarea, text_replies);
-        const event = new Event('input', { bubbles: true });
-        textarea.dispatchEvent(event);
+        const nativeValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
+        if(nativeValueSetter) console.log("trovato setter textarea value");
+        nativeValueSetter.call(textarea, text_replies);
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
     }
 }

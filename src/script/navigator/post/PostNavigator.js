@@ -47,7 +47,13 @@ class PostNavigator {
     async findPost(social, url_post){
         console.log("Url attuale: " + window.location.href + " Url post: " + url_post);
         while(this.hasNextBtn && window.location.href !== url_post){
-            await this.goToNextPost(social);
+            try {
+                await this.goToNextPost(social);
+            }
+            catch (err) {
+                console.log("Ricevuto errore di raggiungimento nuovo post");
+                throw err;
+            }
         }
         console.log("Url attuale: " + window.location.href + " Url post: " + url_post);
     }

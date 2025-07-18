@@ -23,5 +23,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             console.log("Ricevuta richiesta di postare un commento");
             chrome.tabs.sendMessage(message.tabId, {action: "publishComment", social: message.social});
             break;
+        case 'finishedPublish':
+            console.log("Ricevuta notifica di fine pubblicazione commenti");
+            chrome.runtime.sendMessage({action: "finishedPublish"});
+            break;
     }
 })

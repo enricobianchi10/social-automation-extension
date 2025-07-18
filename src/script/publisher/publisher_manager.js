@@ -30,11 +30,51 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         case "publishComment":
             let social = message.social;
             console.log("Ricevuta richiesta di pubblicare un commento");
-            await InstagramPageNavigator.goToProfile(social);
-            for(const mockdata of mockdatas){
-                await InstagramPageNavigator.openLastPost(social);
-                await CommentPublisher.publishRepliesToComment(mockdata.url, mockdata.author, mockdata.text, mockdata.replies, social);
+            try {
+                await InstagramPageNavigator.goToProfile(social);
             }
+            catch(err) {
+                chrome.runtime.sendMessage({
+                    action: "showError",
+                    error: {
+                        message: err.message,
+                        url: err.url
+                    }
+                });
+                return;
+            }
+            
+            for(const mockdata of mockdatas){
+                try {
+                    await InstagramPageNavigator.openLastPost(social);
+                }
+                catch(err) {
+                    chrome.runtime.sendMessage({
+                        action: "showError",
+                        error: {
+                            message: err.message,
+                            url: err.url
+                        }
+                    });
+                    return;
+                }
+                
+                try {
+                    await CommentPublisher.publishRepliesToComment(mockdata.url, mockdata.author, mockdata.text, mockdata.replies, social);
+                }
+                catch(err) {
+                    chrome.runtime.sendMessage({
+                        action: "showError",
+                        error: {
+                            message: err.message,
+                            url: err.url
+                        }
+                    });
+                    return;
+                }
+            }
+            console.log("Terminato publish dei commenti");
+            chrome.runtime.sendMessage({ action: "finishedPublish"});
             break;
     }
 })

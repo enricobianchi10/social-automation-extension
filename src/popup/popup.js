@@ -90,14 +90,16 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   const messageContainer = document.getElementById("messageContainer");
   const statusContainer = document.getElementById("statusContainer");
   const errorContainer = document.getElementById("errorContainer");
+  let statusTitle;
+  let statusLink;
   switch (message.action){
         case "finishedScrape":
             errorContainer.innerHTML = "";
             messageContainer.innerHTML = "";
             statusContainer.innerHTML = "";
-            const statusTitle = document.createElement("h2");
+            statusTitle = document.createElement("h2");
             statusTitle.textContent = "Raccolta dati dai post terminata con successo";
-            const statusLink = document.createElement("a");
+            statusLink = document.createElement("a");
             statusLink.href = message.lastPost;
             statusLink.textContent = "Clicca qui per raggiungere l'ultimo post salvato!";
             statusLink.target = "_blank";
@@ -120,9 +122,18 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             errorContainer.style.display = 'block';
             messageContainer.style.display = 'none';
             break;
+        case "finishedPublish":
+            errorContainer.innerHTML = "";
+            messageContainer.innerHTML = "";
+            statusContainer.innerHTML = "";
+            statusTitle = document.createElement("h2");
+            statusTitle.textContent = "Pubblicazione dei commenti ai post terminata con successo";
+            statusContainer.appendChild(statusTitle);
+            statusContainer.style.display = 'block';
+            messageContainer.style.display = 'none';
+            break;  
     }
 })
-
 
 async function downloadData() {
   const data = await chrome.storage.local.get(null);
@@ -151,7 +162,7 @@ async function checkCookies(tabs){
       }
     }
     console.log("Valore validCookies " + validCookies);
-    if(validCookies === 2){
+    if(validCookies === nameCookies.length){
       console.log("Trovata tab valida: " + tab.url + " " + tab.id);
       return tab.id;
     }
@@ -186,7 +197,7 @@ chrome.downloads.onChanged.addListener((delta) => {
     const errorTitle = document.createElement("h2");
     errorTitle.textContent = "Download interrotto!";
     const errorP = document.createElement("p");
-    errorP.tectContent = "Errore:" + delta.error;
+    errorP.textContent = "Errore:" + delta.error;
     errorContainer.appendChild(errorTitle);
     errorContainer.appendChild(errorP);
     errorContainer.style.display = 'block';

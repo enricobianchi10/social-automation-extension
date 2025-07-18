@@ -8,7 +8,7 @@ class InstagramPageNavigator {
             return;
         }
         else {
-            console.log("Link per aprire utlimo post trovato");
+            console.log("Link per aprire ultimo post trovato");
             if(!this.#isSamePost(postLink.href, urlPage)){
                 postLink.click();
                 try {
@@ -29,6 +29,7 @@ class InstagramPageNavigator {
         const profileLink = XPathManager.getOne(SELECTORS[social].profileLink);
         if(!profileLink){
             console.log("Link per andare sul profilo non trovato");
+            return;
         }
         else {
             console.log("Link per andare sul profilo trovato!");
