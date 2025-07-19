@@ -19,6 +19,7 @@ document.getElementById("getPost").addEventListener("click", async () => {
     statusContainer.appendChild(statusTitle);
     statusContainer.appendChild(statusP);
     statusContainer.style.display = 'block';
+    document.getElementById("publishContainer").style.display = 'none';
 })
 
 document.getElementById("publishComment").addEventListener("click", () => {
@@ -27,7 +28,7 @@ document.getElementById("publishComment").addEventListener("click", () => {
     const messageContainer = document.getElementById("messageContainer");
     messageContainer.innerHTML = "";
     messageContainer.style.display = 'none';
-    document.getElementById("publishComment").style.display = 'none';
+    document.getElementById("publishContainer").style.display = 'none';
     const statusContainer = document.getElementById("statusContainer");
     statusContainer.innerHTML = "";
     const statusTitle = document.createElement("h2");
@@ -37,6 +38,7 @@ document.getElementById("publishComment").addEventListener("click", () => {
     statusContainer.appendChild(statusTitle);
     statusContainer.appendChild(statusP);
     statusContainer.style.display = 'block';
+    document.getElementById("getPost").style.display = 'none';
 })
 
 document.getElementById("downloadData").addEventListener("click", async () => {
@@ -56,6 +58,32 @@ document.getElementById("downloadData").addEventListener("click", async () => {
     }
 })
 
+document.getElementById("fileInput").addEventListener("change", async () => {
+    const fileInput = document.getElementById("fileInput");
+    const file = fileInput.files[0];
+    const publishContainer = document.getElementById("publishContainer");
+    const publishP = publishContainer.querySelectorAll("p");
+    publishP.forEach(p => p.remove());
+    const statusFile = document.createElement("p");
+    if (!file) {
+      statusFile.textContent = "Nessun file selezionato.";
+      publishContainer.appendChild(statusFile);
+      return;
+    }
+
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      validateData(data);
+      document.getElementById("publishComment").style.display = 'block';
+      await chrome.storage.local.set({ commentToPublish: data });
+    }
+    catch(err){
+      statusFile.textContent = "Il file JSON selezionato non è nel formato corretto";
+      publishContainer.appendChild(statusFile);
+    }
+})
+
 document.addEventListener("DOMContentLoaded", async () => {
   const tabs = await chrome.tabs.query({ url: "*://www.instagram.com/*"});
   console.log("Lunghezza tabs:" + tabs.length);
@@ -67,7 +95,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const message = document.createElement("p");
       message.textContent = "Fai click sul pulsante per iniziare la raccolta dati dei post";
       messageContainer.appendChild(message);
-      document.getElementById("getPost").style.display = 'block';
+      messageContainer.style.display = 'block';
     }
     else{
       const messageContainer = document.getElementById("messageContainer");
@@ -75,6 +103,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const message = document.createElement("p");
       message.textContent = "Effettua prima il login del profilo per abilitare la raccolta dati";
       messageContainer.appendChild(message);
+      messageContainer.style.display = 'block';
     }
   }
   else {
@@ -83,6 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const message = document.createElement("p");
     message.textContent = "Apri una pagina di Instagram ed effettua il login del profilo per abilitare la raccolta dati";
     messageContainer.appendChild(message);
+    messageContainer.style.display = 'block';
   }
 });
 
@@ -108,6 +138,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             document.getElementById("downloadContainer").style.display = 'block';
             statusContainer.style.display = 'block';
             messageContainer.style.display = 'none';
+            document.getElementById("publishContainer").style.display = 'block';
             break;
         case "showError":
             errorContainer.innerHTML = "";
@@ -131,47 +162,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             statusContainer.appendChild(statusTitle);
             statusContainer.style.display = 'block';
             messageContainer.style.display = 'none';
+            document.getElementById("getPost").style.display = 'block';
             break;  
     }
 })
-
-async function downloadData() {
-  const data = await chrome.storage.local.get(null);
-  const json_data = JSON.stringify(data, null, 2);
-  const blob = new Blob([json_data], { type: "application/json" });
-  urlBlob = URL.createObjectURL(blob);
-
-  currentDownloadId = await chrome.downloads.download({
-    url: urlBlob,
-    filename: "dati_post.json",
-    saveAs: true,
-  });
-}
-
-async function checkCookies(tabs){
-  
-  const nameCookies = ["sessionid", "ds_user_id"];
-  let validCookies = 0;
-  
-  for (const tab of tabs) {
-    for (const name of nameCookies) {
-      const cookie = await chrome.cookies.get({ url: tab.url, name: name });
-      if (cookie) {
-        console.log("La tab " + tab.url + " contiene il cookie " + cookie.name);
-        validCookies += 1;
-      }
-    }
-    console.log("Valore validCookies " + validCookies);
-    if(validCookies === nameCookies.length){
-      console.log("Trovata tab valida: " + tab.url + " " + tab.id);
-      return tab.id;
-    }
-    else {
-      validCookies = 0;
-    }
-  }
-  return false;
-}
 
 chrome.downloads.onChanged.addListener((delta) => {
   
@@ -208,5 +202,75 @@ chrome.downloads.onChanged.addListener((delta) => {
   }
 })
 
+function validateData(data) {
+  if (!Array.isArray(data)) {
+    throw new Error("Il file JSON deve contenere un array di oggetti.");
+  }
 
+  for (let i = 0; i < data.length; i++) {
+    const item = data[i];
+    const index = i + 1;
+
+    if (typeof item !== 'object' || item === null) {
+      throw new Error(`Elemento ${index} non è un oggetto valido.`);
+    }
+
+    const requiredFields = ['url', 'author', 'text', 'replies'];
+    for (const field of requiredFields) {
+      if (!(field in item)) {
+        throw new Error(`Elemento ${index} manca il campo '${field}'.`);
+      }
+      if (typeof item[field] !== 'string' || item[field].trim() === '') {
+        throw new Error(`Il campo '${field}' in elemento ${index} deve essere una stringa non vuota.`);
+      }
+    }
+
+    // Controllo URL valido (opzionale ma utile)
+    try {
+      new URL(item.url);
+    } catch {
+      throw new Error(`Il campo 'url' in elemento ${index} non è un URL valido.`);
+    }
+  }
+
+  return true; // Tutto ok
+}
+
+async function downloadData() {
+  const data = await chrome.storage.local.get("postList");
+  const json_data = JSON.stringify(data, null, 2);
+  const blob = new Blob([json_data], { type: "application/json" });
+  urlBlob = URL.createObjectURL(blob);
+
+  currentDownloadId = await chrome.downloads.download({
+    url: urlBlob,
+    filename: "dati_post.json",
+    saveAs: true,
+  });
+}
+
+async function checkCookies(tabs){
+  
+  const nameCookies = ["sessionid", "ds_user_id"];
+  let validCookies = 0;
+  
+  for (const tab of tabs) {
+    for (const name of nameCookies) {
+      const cookie = await chrome.cookies.get({ url: tab.url, name: name });
+      if (cookie) {
+        console.log("La tab " + tab.url + " contiene il cookie " + cookie.name);
+        validCookies += 1;
+      }
+    }
+    console.log("Valore validCookies " + validCookies);
+    if(validCookies === nameCookies.length){
+      console.log("Trovata tab valida: " + tab.url + " " + tab.id);
+      return tab.id;
+    }
+    else {
+      validCookies = 0;
+    }
+  }
+  return false;
+}
 

@@ -12,17 +12,22 @@
 
     <div id="messageContainer" class="info-box"></div>
 
-    <button id="getPost" class="btn primary" style="display:none;">Inizia raccolta dati</button>
+    <button id="getPost" class="btn primary">Inizia raccolta dati</button>
 
-    <div id="statusContainer" class="status-box" style="display:none;"></div>
-    <div id="errorContainer" class="error-box" style="display:none;"></div>
-
-    <div id="downloadContainer" class="download-section">
+    <div id="downloadContainer" class="download-box">
       <p class="info">Premendo sul pulsante seguente verrà effettuato il download dei dati raccolti in un file JSON</p>
       <button id="downloadData" class="btn secondary">Scarica i dati raccolti</button>
     </div>
 
-    <button id="publishComment" class="btn primary">Rispondi ad un commento</button>
+    <div id="publishContainer" class="publish-box">
+      <label for="jsonFile">Seleziona il file JSON con i commenti da pubblicare:</label>
+      <input type="file" id="fileInput" accept=".json" />
+      <button id="publishComment" class="btn primary">Pubblica risposte ai commenti</button>
+    </div>
+
+    <div id="statusContainer" class="status-box"></div>
+    <div id="errorContainer" class="error-box"></div>
+
   </div>
   <script src="popup.js"></script>
 </body>

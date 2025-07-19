@@ -1,30 +1,3 @@
-const mockdatas = [
-    {
-        url: 'https://www.instagram.com/p/DLkPkcLtGy1/',
-        author: 'account_prova1212',
-        text: 'comment 1',
-        replies: 'commento postato automaticamente'
-    },
-    {
-        url: 'https://www.instagram.com/p/DLzs4UaNlqw/',
-        author: 'account_prova1212',
-        text: 'commento 2',
-        replies: 'commento postato automaticamente'
-    },
-    {
-        url: 'https://www.instagram.com/p/DL0GFPrNZYs/',
-        author: 'account_prova1212',
-        text: 'commento nuovo1',
-        replies: 'commento postato automaticamente'
-    },
-    {
-        url: 'https://www.instagram.com/p/DLzs4UaNlqw/',
-        author: 'account_prova1212',
-        text: 'commento 3',
-        replies: 'commento postato automaticamente'
-    }
-];
-
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     switch (message.action){
         case "publishComment":
@@ -43,8 +16,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 });
                 return;
             }
-            
-            for(const mockdata of mockdatas){
+            const result = await chrome.storage.local.get('commentToPublish');
+            const comments = result.commentToPublish;
+            for(const comment of comments){
                 try {
                     await InstagramPageNavigator.openLastPost(social);
                 }
@@ -60,7 +34,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 }
                 
                 try {
-                    await CommentPublisher.publishRepliesToComment(mockdata.url, mockdata.author, mockdata.text, mockdata.replies, social);
+                    await CommentPublisher.publishRepliesToComment(comment.url, comment.author, comment.text, comment.replies, social);
                 }
                 catch(err) {
                     chrome.runtime.sendMessage({

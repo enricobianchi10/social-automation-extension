@@ -19,13 +19,16 @@ h1 {
 
 #messageContainer,
 #errorContainer,
-#statusContainer {
+#statusContainer,
+#downloadContainer,
+#publishContainer {
   margin-bottom: 1rem;
   padding: 0.75rem 1rem;
   border-radius: 6px;
   font-size: 0.95rem;
   background-color: #f5f5f5;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: none;
 }
 
 #errorContainer {
@@ -51,13 +54,20 @@ h1 {
   background-color: #fafafa;
   border-radius: 8px;
   border: 1px solid #ddd;
-  display: none;
 }
 
 #downloadContainer p {
   margin-bottom: 0.75rem;
   font-size: 0.95rem;
   color: #444444;
+}
+
+#publishContainer {
+  display: block;
+}
+
+#publishContainer button {
+  display: none;
 }
 
 a {
