@@ -62,11 +62,11 @@ h1 {
   color: #444444;
 }
 
-#publishContainer {
-  display: block;
+#pubblicaTitle {
+  display: none;
 }
 
-#publishContainer button {
+#publishComment {
   display: none;
 }
 

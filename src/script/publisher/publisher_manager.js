@@ -51,4 +51,5 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             chrome.runtime.sendMessage({ action: "finishedPublish"});
             break;
     }
+    return true;
 })

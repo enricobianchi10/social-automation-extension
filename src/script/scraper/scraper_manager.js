@@ -29,6 +29,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             console.log("Terminato scraping dei post");
             chrome.runtime.sendMessage({ action: "finishedScrape", lastPost: postNavigator.postUrl});
     }
+    return true;
 })
 
 async function scrapeSinglePost(social, postNumber){

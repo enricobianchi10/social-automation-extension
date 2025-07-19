@@ -7,7 +7,6 @@ document.getElementById("getPost").addEventListener("click", async () => {
     //const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     chrome.runtime.sendMessage({action: "getPost", tabId: instaTabId, social: social});
     const messageContainer = document.getElementById("messageContainer");
-    messageContainer.innerHTML = "";
     messageContainer.style.display = 'none';
     document.getElementById("getPost").style.display = 'none';
     const statusContainer = document.getElementById("statusContainer");
@@ -19,16 +18,16 @@ document.getElementById("getPost").addEventListener("click", async () => {
     statusContainer.appendChild(statusTitle);
     statusContainer.appendChild(statusP);
     statusContainer.style.display = 'block';
+    document.getElementById("pubblicaTitle").style.display = 'none';
     document.getElementById("publishContainer").style.display = 'none';
+    document.getElementById("downloadContainer").style.display = 'none';
 })
 
 document.getElementById("publishComment").addEventListener("click", () => {
     //const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     chrome.runtime.sendMessage({action: "publishComment", tabId: instaTabId, social: social});
     const messageContainer = document.getElementById("messageContainer");
-    messageContainer.innerHTML = "";
     messageContainer.style.display = 'none';
-    document.getElementById("publishContainer").style.display = 'none';
     const statusContainer = document.getElementById("statusContainer");
     statusContainer.innerHTML = "";
     const statusTitle = document.createElement("h2");
@@ -38,15 +37,19 @@ document.getElementById("publishComment").addEventListener("click", () => {
     statusContainer.appendChild(statusTitle);
     statusContainer.appendChild(statusP);
     statusContainer.style.display = 'block';
+    document.getElementById("publishContainer").style.display = 'none';
+    document.getElementById("raccoltaTitle").style.display = 'none';
     document.getElementById("getPost").style.display = 'none';
+    document.getElementById("downloadContainer").style.display = 'none';
 })
 
 document.getElementById("downloadData").addEventListener("click", async () => {
     // const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     const downloadContainer = document.getElementById("downloadContainer");
     const errorContainer = document.getElementById("errorContainer");
-    downloadContainer.innerHTML = "";
+    downloadContainer.style.display = 'none';
     errorContainer.innerHTML = "";
+    errorContainer.style.display = 'none';
     try {
       await downloadData();
     }
@@ -120,12 +123,14 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   const messageContainer = document.getElementById("messageContainer");
   const statusContainer = document.getElementById("statusContainer");
   const errorContainer = document.getElementById("errorContainer");
+  const publishContainer = document.getElementById("publishContainer");
+  const downloadContainer = document.getElementById("downloadContainer");
   let statusTitle;
   let statusLink;
   switch (message.action){
         case "finishedScrape":
             errorContainer.innerHTML = "";
-            messageContainer.innerHTML = "";
+            errorContainer.style.display = 'none';
             statusContainer.innerHTML = "";
             statusTitle = document.createElement("h2");
             statusTitle.textContent = "Raccolta dati dai post terminata con successo";
@@ -135,10 +140,12 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             statusLink.target = "_blank";
             statusContainer.appendChild(statusTitle);
             statusContainer.appendChild(statusLink);
-            document.getElementById("downloadContainer").style.display = 'block';
+            downloadContainer.style.display = 'block';
             statusContainer.style.display = 'block';
-            messageContainer.style.display = 'none';
-            document.getElementById("publishContainer").style.display = 'block';
+            messageContainer.style.display = 'block';
+            document.getElementById("getPost").style.display = 'block';
+            publishContainer.style.display = 'block';
+            document.getElementById("pubblicaTitle").style.display = 'block';
             break;
         case "showError":
             errorContainer.innerHTML = "";
@@ -151,18 +158,19 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             errorContainer.appendChild(errorTitle);
             errorContainer.appendChild(errorLink);
             errorContainer.style.display = 'block';
-            messageContainer.style.display = 'none';
             break;
         case "finishedPublish":
             errorContainer.innerHTML = "";
-            messageContainer.innerHTML = "";
+            errorContainer.style.display = 'none';
             statusContainer.innerHTML = "";
             statusTitle = document.createElement("h2");
             statusTitle.textContent = "Pubblicazione dei commenti ai post terminata con successo";
             statusContainer.appendChild(statusTitle);
             statusContainer.style.display = 'block';
-            messageContainer.style.display = 'none';
+            downloadContainer.style.display = 'none';
+            messageContainer.style.display = 'block'
             document.getElementById("getPost").style.display = 'block';
+            document.getElementById("raccoltaTitle").style.display = 'block';
             break;  
     }
 })
@@ -171,12 +179,12 @@ chrome.downloads.onChanged.addListener((delta) => {
   
   const downloadContainer = document.getElementById("downloadContainer");
   const errorContainer = document.getElementById("errorContainer");
-  downloadContainer.innerHTML = "";
-  errorContainer.innerHTML = "";
+  errorContainer.style.display = 'none';
   
   if (delta.id !== currentDownloadId) return;
   
   if (delta.state?.current === "complete"){
+    downloadContainer.innerHTML = '';
     const downloadTitle = document.createElement("h2");
     downloadTitle.textContent = "Download terminato con successo!";
     downloadContainer.appendChild(downloadTitle);
@@ -188,6 +196,7 @@ chrome.downloads.onChanged.addListener((delta) => {
   }
 
   if(delta.state?.current === "interrupted"){
+    downloadContainer.style.display = 'block';
     const errorTitle = document.createElement("h2");
     errorTitle.textContent = "Download interrotto!";
     const errorP = document.createElement("p");
