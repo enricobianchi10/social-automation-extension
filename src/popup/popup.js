@@ -168,7 +168,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             statusContainer.appendChild(statusTitle);
             statusContainer.style.display = 'block';
             downloadContainer.style.display = 'none';
-            messageContainer.style.display = 'block'
+            messageContainer.style.display = 'block';
             document.getElementById("getPost").style.display = 'block';
             document.getElementById("raccoltaTitle").style.display = 'block';
             break;  
@@ -178,17 +178,20 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 chrome.downloads.onChanged.addListener((delta) => {
   
   const downloadContainer = document.getElementById("downloadContainer");
+  const statusContainer = document.getElementById("statusContainer");
   const errorContainer = document.getElementById("errorContainer");
   errorContainer.style.display = 'none';
+  let statusTitle;
   
   if (delta.id !== currentDownloadId) return;
   
   if (delta.state?.current === "complete"){
-    downloadContainer.innerHTML = '';
-    const downloadTitle = document.createElement("h2");
-    downloadTitle.textContent = "Download terminato con successo!";
-    downloadContainer.appendChild(downloadTitle);
     downloadContainer.style.display = 'block';
+    statusContainer.style.display = 'block';
+    statusContainer.innerHTML = "";
+    statusTitle = document.createElement("h2");
+    statusTitle.textContent = "Download terminato con successo!";
+    statusContainer.appendChild(statusTitle);
     // Dopo il download, rilascia l'URL per liberare memoria
     URL.revokeObjectURL(urlBlob);
     urlBlob = null;
