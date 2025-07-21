@@ -3,257 +3,227 @@ let currentDownloadId = null;
 let urlBlob = null;
 let instaTabId = null;
 
+// Utility DOM
+function show(el) {
+  el.classList.remove("hidden");
+}
+
+function hide(el) {
+  el.classList.add("hidden");
+}
+
+function setText(el, text) {
+  el.textContent = text;
+}
+
+function clearChildren(el) {
+  while (el.firstChild) el.removeChild(el.firstChild);
+}
+
+function showStatus(title, message = "") {
+  const statusContainer = document.getElementById("statusContainer");
+  clearChildren(statusContainer);
+  const titleEl = document.createElement("h2");
+  setText(titleEl, title);
+  statusContainer.appendChild(titleEl);
+  if (message) {
+    const msgEl = document.createElement("p");
+    setText(msgEl, message);
+    statusContainer.appendChild(msgEl);
+  }
+  show(statusContainer);
+}
+
+function showError(message, url = null) {
+  const errorContainer = document.getElementById("errorContainer");
+  clearChildren(errorContainer);
+  const titleEl = document.createElement("h2");
+  setText(titleEl, message);
+  errorContainer.appendChild(titleEl);
+  if (url) {
+    const linkEl = document.createElement("a");
+    linkEl.href = url;
+    setText(linkEl, "Clicca qui per raggiungere l'ultimo post salvato!");
+    linkEl.target = "_blank";
+    errorContainer.appendChild(linkEl);
+  }
+  show(errorContainer);
+}
+
 document.getElementById("getPost").addEventListener("click", async () => {
-    //const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    chrome.runtime.sendMessage({action: "getPost", tabId: instaTabId, social: social});
-    const messageContainer = document.getElementById("messageContainer");
-    messageContainer.style.display = 'none';
-    document.getElementById("getPost").style.display = 'none';
-    const statusContainer = document.getElementById("statusContainer");
-    statusContainer.innerHTML = "";
-    const statusTitle = document.createElement("h2");
-    statusTitle.textContent = "Raccolta dati in corso...";
-    const statusP = document.createElement("p");
-    statusP.textContent = "Attendi il termine della raccolta dei dati senza interagire con la pagina";
-    statusContainer.appendChild(statusTitle);
-    statusContainer.appendChild(statusP);
-    statusContainer.style.display = 'block';
-    document.getElementById("pubblicaTitle").style.display = 'none';
-    document.getElementById("publishContainer").style.display = 'none';
-    document.getElementById("downloadContainer").style.display = 'none';
-})
+  chrome.runtime.sendMessage({ action: "getPost", tabId: instaTabId, social });
+
+  hide(document.getElementById("getPost"));
+  hide(document.getElementById("messageContainer"));
+  hide(document.getElementById("downloadContainer"));
+  hide(document.getElementById("publishContainer"));
+  hide(document.getElementById("pubblicaTitle"));
+
+  showStatus("Raccolta dati in corso...", "Attendi il termine della raccolta dei dati senza interagire con la pagina");
+});
 
 document.getElementById("publishComment").addEventListener("click", () => {
-    //const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    chrome.runtime.sendMessage({action: "publishComment", tabId: instaTabId, social: social});
-    const messageContainer = document.getElementById("messageContainer");
-    messageContainer.style.display = 'none';
-    const statusContainer = document.getElementById("statusContainer");
-    statusContainer.innerHTML = "";
-    const statusTitle = document.createElement("h2");
-    statusTitle.textContent = "Inserimento del commento in corso...";
-    const statusP = document.createElement("p");
-    statusP.textContent = "Attendi il termine dell'inserimento del commento senza interagire con la pagina";
-    statusContainer.appendChild(statusTitle);
-    statusContainer.appendChild(statusP);
-    statusContainer.style.display = 'block';
-    document.getElementById("publishContainer").style.display = 'none';
-    document.getElementById("raccoltaTitle").style.display = 'none';
-    document.getElementById("getPost").style.display = 'none';
-    document.getElementById("downloadContainer").style.display = 'none';
-})
+  chrome.runtime.sendMessage({ action: "publishComment", tabId: instaTabId, social });
+
+  hide(document.getElementById("publishContainer"));
+  hide(document.getElementById("raccoltaTitle"));
+  hide(document.getElementById("getPost"));
+  hide(document.getElementById("downloadContainer"));
+  hide(document.getElementById("messageContainer"));
+
+  showStatus("Inserimento del commento in corso...", "Attendi il termine dell'inserimento del commento senza interagire con la pagina");
+});
 
 document.getElementById("downloadData").addEventListener("click", async () => {
-    // const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    const downloadContainer = document.getElementById("downloadContainer");
-    const errorContainer = document.getElementById("errorContainer");
-    downloadContainer.style.display = 'none';
-    errorContainer.innerHTML = "";
-    errorContainer.style.display = 'none';
-    try {
-      await downloadData();
-    }
-    catch (err) {
-      const errorTitle = document.createElement("h2");
-      errorTitle.textContent = "Errore nel download: " + err.message;
-      errorContainer.appendChild(errorTitle);
-      errorContainer.style.display = 'block';
-    }
-})
+  hide(document.getElementById("downloadContainer"));
+  hide(document.getElementById("errorContainer"));
 
-document.getElementById("fileInput").addEventListener("change", async () => {
-    const fileInput = document.getElementById("fileInput");
-    const file = fileInput.files[0];
-    const publishContainer = document.getElementById("publishContainer");
-    const publishP = publishContainer.querySelectorAll("p");
-    publishP.forEach(p => p.remove());
-    const statusFile = document.createElement("p");
-    if (!file) {
-      statusFile.textContent = "Nessun file selezionato.";
-      publishContainer.appendChild(statusFile);
-      return;
-    }
-
-    try {
-      const text = await file.text();
-      const data = JSON.parse(text);
-      validateData(data);
-      document.getElementById("publishComment").style.display = 'block';
-      await chrome.storage.local.set({ commentToPublish: data });
-    }
-    catch(err){
-      statusFile.textContent = "Il file JSON selezionato non è nel formato corretto";
-      publishContainer.appendChild(statusFile);
-    }
-})
-
-document.addEventListener("DOMContentLoaded", async () => {
-  const tabs = await chrome.tabs.query({ url: "*://www.instagram.com/*"});
-  console.log("Lunghezza tabs:" + tabs.length);
-  if(tabs.length > 0){
-    instaTabId = await checkCookies(tabs);
-    if(instaTabId){
-      const messageContainer = document.getElementById("messageContainer");
-      messageContainer.innerHTML = "";
-      const message = document.createElement("p");
-      message.textContent = "Fai click sul pulsante per iniziare la raccolta dati dei post";
-      messageContainer.appendChild(message);
-      messageContainer.style.display = 'block';
-    }
-    else{
-      const messageContainer = document.getElementById("messageContainer");
-      messageContainer.innerHTML = "";
-      const message = document.createElement("p");
-      message.textContent = "Effettua prima il login del profilo per abilitare la raccolta dati";
-      messageContainer.appendChild(message);
-      messageContainer.style.display = 'block';
-    }
-  }
-  else {
-    const messageContainer = document.getElementById("messageContainer");
-    messageContainer.innerHTML = "";
-    const message = document.createElement("p");
-    message.textContent = "Apri una pagina di Instagram ed effettua il login del profilo per abilitare la raccolta dati";
-    messageContainer.appendChild(message);
-    messageContainer.style.display = 'block';
+  try {
+    await downloadData();
+  } catch (err) {
+    showError("Errore nel download: " + err.message);
   }
 });
 
-chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+document.getElementById("fileInput").addEventListener("change", async () => {
+  const file = document.getElementById("fileInput").files[0];
+  const publishContainer = document.getElementById("publishContainer");
+
+  publishContainer.querySelectorAll("p").forEach(p => p.remove());
+
+  const statusFile = document.createElement("p");
+  if (!file) {
+    setText(statusFile, "Nessun file selezionato.");
+    publishContainer.appendChild(statusFile);
+    return;
+  }
+
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+    validateData(data);
+    setText(statusFile, "File valido: " + data.length + " commenti da pubblicare");
+    show(document.getElementById("publishComment"));
+    await chrome.storage.local.set({ commentToPublish: data });
+  } catch (err) {
+    setText(statusFile, "Il file JSON selezionato non è nel formato corretto");
+  }
+
+  publishContainer.appendChild(statusFile);
+});
+
+document.addEventListener("DOMContentLoaded", async () => {
   const messageContainer = document.getElementById("messageContainer");
-  const statusContainer = document.getElementById("statusContainer");
-  const errorContainer = document.getElementById("errorContainer");
+  const getPostButton = document.getElementById("getPost");
+
+  const tabs = await chrome.tabs.query({ url: "*://www.instagram.com/*" });
+
+  if (tabs.length === 0) {
+    setText(messageContainer, "Apri una pagina di Instagram ed effettua il login del profilo per abilitare la raccolta dati");
+    show(messageContainer);
+    hide(getPostButton);
+    return;
+  }
+
+  // Verifica cookie (autenticazione)
+  instaTabId = await checkCookies(tabs);
+
+  if (instaTabId) {
+    setText(messageContainer, "Fai click sul pulsante per iniziare la raccolta dati dei post");
+    show(messageContainer, getPostButton);
+  } else {
+    setText(messageContainer, "Effettua prima il login del profilo per abilitare la raccolta dati");
+    show(messageContainer);
+    hide(getPostButton);
+  }
+});
+
+chrome.runtime.onMessage.addListener((message) => {
+  const messageContainer = document.getElementById("messageContainer");
   const publishContainer = document.getElementById("publishContainer");
   const downloadContainer = document.getElementById("downloadContainer");
-  let statusTitle;
-  let statusLink;
-  switch (message.action){
-        case "finishedScrape":
-            errorContainer.innerHTML = "";
-            errorContainer.style.display = 'none';
-            statusContainer.innerHTML = "";
-            statusTitle = document.createElement("h2");
-            statusTitle.textContent = "Raccolta dati dai post terminata con successo";
-            statusLink = document.createElement("a");
-            statusLink.href = message.lastPost;
-            statusLink.textContent = "Clicca qui per raggiungere l'ultimo post salvato!";
-            statusLink.target = "_blank";
-            statusContainer.appendChild(statusTitle);
-            statusContainer.appendChild(statusLink);
-            downloadContainer.style.display = 'block';
-            statusContainer.style.display = 'block';
-            messageContainer.style.display = 'block';
-            document.getElementById("getPost").style.display = 'block';
-            publishContainer.style.display = 'block';
-            document.getElementById("pubblicaTitle").style.display = 'block';
-            break;
-        case "showError":
-            errorContainer.innerHTML = "";
-            const errorTitle = document.createElement("h2");
-            errorTitle.textContent = message.error.message;
-            const errorLink = document.createElement("a");
-            errorLink.href = message.error.url;
-            errorLink.textContent = "Clicca qui per raggiungere l'ultimo post salvato!";
-            errorLink.target = "_blank";
-            errorContainer.appendChild(errorTitle);
-            errorContainer.appendChild(errorLink);
-            errorContainer.style.display = 'block';
-            break;
-        case "finishedPublish":
-            errorContainer.innerHTML = "";
-            errorContainer.style.display = 'none';
-            statusContainer.innerHTML = "";
-            statusTitle = document.createElement("h2");
-            statusTitle.textContent = "Pubblicazione dei commenti ai post terminata con successo";
-            statusContainer.appendChild(statusTitle);
-            statusContainer.style.display = 'block';
-            downloadContainer.style.display = 'none';
-            messageContainer.style.display = 'block';
-            document.getElementById("getPost").style.display = 'block';
-            document.getElementById("raccoltaTitle").style.display = 'block';
-            break;  
-    }
-})
+  const getPostBtn = document.getElementById("getPost");
+
+  switch (message.action) {
+    case "finishedScrape":
+      showStatus("Raccolta dati dai post terminata con successo");
+      const link = document.createElement("a");
+      link.href = message.lastPost;
+      link.target = "_blank";
+      link.textContent = "Clicca qui per raggiungere l'ultimo post salvato!";
+      document.getElementById("statusContainer").appendChild(link);
+      show(downloadContainer);
+      show(messageContainer);
+      show(getPostBtn);
+      show(publishContainer);
+      show(document.getElementById("pubblicaTitle"));
+      break;
+
+    case "showError":
+      showError(message.error.message, message.error.url);
+      break;
+
+    case "finishedPublish":
+      showStatus("Pubblicazione dei commenti ai post terminata con successo");
+      show(messageContainer);
+      show(getPostBtn);
+      show(document.getElementById("raccoltaTitle"));
+      hide(downloadContainer);
+      break;
+  }
+});
 
 chrome.downloads.onChanged.addListener((delta) => {
-  
-  const downloadContainer = document.getElementById("downloadContainer");
-  const statusContainer = document.getElementById("statusContainer");
-  const errorContainer = document.getElementById("errorContainer");
-  errorContainer.style.display = 'none';
-  let statusTitle;
-  
   if (delta.id !== currentDownloadId) return;
-  
-  if (delta.state?.current === "complete"){
-    downloadContainer.style.display = 'block';
-    statusContainer.style.display = 'block';
-    statusContainer.innerHTML = "";
-    statusTitle = document.createElement("h2");
-    statusTitle.textContent = "Download terminato con successo!";
-    statusContainer.appendChild(statusTitle);
-    // Dopo il download, rilascia l'URL per liberare memoria
-    URL.revokeObjectURL(urlBlob);
-    urlBlob = null;
-    currentDownloadId = null;
+
+  const downloadContainer = document.getElementById("downloadContainer");
+
+  if (delta.state?.current === "complete") {
+    showStatus("Download terminato con successo!");
+    show(downloadContainer);
+    cleanupDownload();
   }
 
-  if(delta.state?.current === "interrupted"){
-    downloadContainer.style.display = 'block';
-    const errorTitle = document.createElement("h2");
-    errorTitle.textContent = "Download interrotto!";
-    const errorP = document.createElement("p");
-    errorP.textContent = "Errore:" + delta.error;
-    errorContainer.appendChild(errorTitle);
-    errorContainer.appendChild(errorP);
-    errorContainer.style.display = 'block';
-    // Dopo il download, rilascia l'URL per liberare memoria
-    URL.revokeObjectURL(urlBlob);
-    urlBlob = null;
-    currentDownloadId = null;
+  if (delta.state?.current === "interrupted") {
+    show(downloadContainer);
+    showError("Download interrotto!", "Errore: " + delta.error);
+    cleanupDownload();
   }
-})
+});
+
+function cleanupDownload() {
+  if (urlBlob) URL.revokeObjectURL(urlBlob);
+  urlBlob = null;
+  currentDownloadId = null;
+}
 
 function validateData(data) {
-  if (!Array.isArray(data)) {
-    throw new Error("Il file JSON deve contenere un array di oggetti.");
-  }
+  if (!Array.isArray(data)) throw new Error("Il file JSON deve contenere un array di oggetti.");
 
-  for (let i = 0; i < data.length; i++) {
-    const item = data[i];
+  data.forEach((item, i) => {
     const index = i + 1;
+    if (typeof item !== "object" || item === null) throw new Error(`Elemento ${index} non è un oggetto valido.`);
 
-    if (typeof item !== 'object' || item === null) {
-      throw new Error(`Elemento ${index} non è un oggetto valido.`);
-    }
-
-    const requiredFields = ['url', 'author', 'text', 'replies'];
-    for (const field of requiredFields) {
-      if (!(field in item)) {
-        throw new Error(`Elemento ${index} manca il campo '${field}'.`);
-      }
-      if (typeof item[field] !== 'string' || item[field].trim() === '') {
+    const requiredFields = ["url", "author", "text", "replies"];
+    requiredFields.forEach((field) => {
+      if (!(field in item)) throw new Error(`Elemento ${index} manca il campo '${field}'.`);
+      if (typeof item[field] !== "string" || item[field].trim() === "") {
         throw new Error(`Il campo '${field}' in elemento ${index} deve essere una stringa non vuota.`);
       }
-    }
+    });
 
-    // Controllo URL valido (opzionale ma utile)
     try {
       new URL(item.url);
     } catch {
       throw new Error(`Il campo 'url' in elemento ${index} non è un URL valido.`);
     }
-  }
-
-  return true; // Tutto ok
+  });
 }
 
 async function downloadData() {
-  const data = await chrome.storage.local.get("postList");
-  const json_data = JSON.stringify(data, null, 2);
-  const blob = new Blob([json_data], { type: "application/json" });
+  const { postList } = await chrome.storage.local.get("postList");
+  const blob = new Blob([JSON.stringify(postList, null, 2)], { type: "application/json" });
   urlBlob = URL.createObjectURL(blob);
-
   currentDownloadId = await chrome.downloads.download({
     url: urlBlob,
     filename: "dati_post.json",
@@ -261,28 +231,19 @@ async function downloadData() {
   });
 }
 
-async function checkCookies(tabs){
-  
+async function checkCookies(tabs) {
   const nameCookies = ["sessionid", "ds_user_id"];
-  let validCookies = 0;
-  
+
   for (const tab of tabs) {
+    let validCookies = 0;
+
     for (const name of nameCookies) {
-      const cookie = await chrome.cookies.get({ url: tab.url, name: name });
-      if (cookie) {
-        console.log("La tab " + tab.url + " contiene il cookie " + cookie.name);
-        validCookies += 1;
-      }
+      const cookie = await chrome.cookies.get({ url: tab.url, name });
+      if (cookie) validCookies++;
     }
-    console.log("Valore validCookies " + validCookies);
-    if(validCookies === nameCookies.length){
-      console.log("Trovata tab valida: " + tab.url + " " + tab.id);
-      return tab.id;
-    }
-    else {
-      validCookies = 0;
-    }
+
+    if (validCookies === nameCookies.length) return tab.id;
   }
+
   return false;
 }
-

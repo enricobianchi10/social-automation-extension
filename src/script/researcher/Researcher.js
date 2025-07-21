@@ -14,11 +14,15 @@ class Researcher {
         let commentNavigator = new CommentNavigator();
         await commentNavigator.loadAllComments(social); //tutti i commenti caricati
         const commentBoxList = XPathManager.getAll(SELECTORS[social].boxComment);
+        if(commentBoxList.length > 0) console.log("Box commenti caricati");
         const commentBoxFiltred = commentBoxList.filter(node => node.querySelector('h3').innerText === author_comment && node.querySelectorAll('span')[2].innerText === text_comment);
-        if(commentBoxFiltred) {
+        if(commentBoxFiltred.length > 0) {
             console.log("Box del commento trovato");
             return commentBoxFiltred[0];
         }
-        else return false;
+        else {
+            console.log("Box del commento non trovato");
+            return false;
+        }
     }
 }

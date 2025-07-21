@@ -46,7 +46,7 @@ class PostNavigator {
 
     async findPost(social, url_post){
         console.log("Url attuale: " + window.location.href + " Url post: " + url_post);
-        while(this.hasNextBtn && window.location.href !== url_post){
+        while(this.hasNextBtn && !isSamePost(window.location.href, url_post)){
             try {
                 await this.goToNextPost(social);
             }

@@ -8,30 +8,29 @@
 </head>
 <body>
   <div class="popup-container">
-    
     <h1 id="raccoltaTitle">Raccolta Dati</h1>
 
-    <div id="messageContainer" class="info-box"></div>
+    <div id="messageContainer" class="info-box hidden"></div>
 
     <button id="getPost" class="btn primary">Inizia raccolta dati</button>
 
-    <div id="downloadContainer" class="download-box">
-      <p class="info">Premendo sul pulsante seguente verrà effettuato il download dei dati raccolti in un file JSON</p>
-      <button id="downloadData" class="btn secondary">Scarica i dati raccolti</button>
+    <div id="downloadContainer" class="download-box hidden">
+      <p>Scarica i dati raccolti in formato JSON</p>
+      <button id="downloadData" class="btn secondary">Scarica</button>
     </div>
 
-    <h1 id="pubblicaTitle">Pubblica commenti</h1>
+    <h1 id="pubblicaTitle" class="hidden">Pubblica Commenti</h1>
 
-    <div id="publishContainer" class="publish-box">
-      <label for="jsonFile">Seleziona il file JSON con i commenti da pubblicare:</label>
+    <div id="publishContainer" class="publish-box hidden">
+      <label for="fileInput">Seleziona un file JSON valido:</label>
       <input type="file" id="fileInput" accept=".json" />
-      <button id="publishComment" class="btn primary">Pubblica risposte ai commenti</button>
+      <button id="publishComment" class="btn primary hidden">Pubblica Commenti</button>
     </div>
 
-    <div id="statusContainer" class="status-box"></div>
-    <div id="errorContainer" class="error-box"></div>
-
+    <div id="statusContainer" class="status-box hidden"></div>
+    <div id="errorContainer" class="error-box hidden"></div>
   </div>
+
   <script src="popup.js"></script>
 </body>
 </html>
