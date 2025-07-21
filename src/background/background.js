@@ -1,4 +1,8 @@
-//riceve l'evento emesso dal pulsante del popup
+chrome.sidePanel
+  .setPanelBehavior({ openPanelOnActionClick: true })
+  .catch((error) => console.error(error));
+
+//riceve l'evento emesso dal pulsante del sidepanel
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     switch (message.action){
         case 'getPost':

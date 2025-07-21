@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Automazione Social</title>
-  <link rel="stylesheet" href="popup.css" />
+  <link rel="stylesheet" href="sidepanel.css" />
 </head>
 <body>
   <div class="popup-container">
@@ -15,22 +15,22 @@
     <button id="getPost" class="btn primary">Inizia raccolta dati</button>
 
     <div id="downloadContainer" class="download-box hidden">
-      <p>Scarica i dati raccolti in formato JSON</p>
-      <button id="downloadData" class="btn secondary">Scarica</button>
+      <p>Premi per scaricare i dati raccolti come file JSON</p>
+      <button id="downloadData" class="btn secondary">Scarica i dati raccolti</button>
     </div>
 
     <h1 id="pubblicaTitle" class="hidden">Pubblica Commenti</h1>
 
     <div id="publishContainer" class="publish-box hidden">
-      <label for="fileInput">Seleziona un file JSON valido:</label>
+      <label for="fileInput">Seleziona il file JSON con i commenti da pubblicare:</label>
       <input type="file" id="fileInput" accept=".json" />
-      <button id="publishComment" class="btn primary hidden">Pubblica Commenti</button>
+      <button id="publishComment" class="btn primary hidden">Pubblica risposte ai commenti</button>
     </div>
 
     <div id="statusContainer" class="status-box hidden"></div>
     <div id="errorContainer" class="error-box hidden"></div>
   </div>
 
-  <script src="popup.js"></script>
+  <script src="sidepanel.js"></script>
 </body>
 </html>
