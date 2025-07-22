@@ -60,7 +60,7 @@ class PostScraper {
     async scrapeAll(){
         console.log("Inizio scraping di tutti i post");
         let posts = [];
-        const postNumber = this.#getPostNumber();
+        let postNumber = this.#getPostNumber();
         console.log("Ricevuto numero di post");
         while(this.postNavigator.hasNextBtn){
             let post = await this.#scrape(postNumber); 
