@@ -9,7 +9,7 @@ class InstagramPageNavigator {
         }
         else {
             console.log("Link per aprire ultimo post trovato");
-            if(!this.#isSamePost(postLink.href, urlPage)){
+            if(!isSamePost(postLink.href, urlPage)){
                 postLink.click();
                 try {
                     await ChangeDetector.waitForUrlChanges(urlPage);
@@ -46,17 +46,5 @@ class InstagramPageNavigator {
                 throw err;
             }
         }
-    }
-
-    static #extractPostId(post_url){
-        const match = post_url.match(/\/p\/([^\/?#]+)/);
-        return match ? match[1] : null;
-    }
-
-    static #isSamePost(url_1, url_2){
-        const id_1 = this.#extractPostId(url_1);
-        const id_2 = this.#extractPostId(url_2);
-
-        return id_1 && id_2 && id_1 === id_2;
     }
 }

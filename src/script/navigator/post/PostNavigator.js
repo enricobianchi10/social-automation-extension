@@ -1,7 +1,8 @@
 //xpath per bottone avanti '//button[.//*[@aria-label="Avanti"]]' (si può anche fare inerente al testo dentro e non aria-label)
 class PostNavigator {
-    constructor(post_url){
+    constructor(post_url, social){
         this._postUrl = post_url;
+        this._social = social;
         this._hasNextBtn = true;
     }
 
@@ -21,8 +22,16 @@ class PostNavigator {
         this._postUrl = post_url;
     }
 
-    async goToNextPost(social){
-        const nextBtn = XPathManager.getOne(SELECTORS[social].newPostButton); //selettore per andare avanti di post
+    get social(){
+        return this._social;
+    }
+
+    set social(social){
+        this._social = social;
+    }
+
+    async next(){
+        const nextBtn = XPathManager.getOne(SELECTORS[this.social].newPostButton); //selettore per andare avanti di post
         if(!nextBtn){
             console.log("Nessun pulsante di prossimo post trovato");
             this.hasNextBtn = false;
@@ -42,19 +51,5 @@ class PostNavigator {
                 throw err;
             }
         }
-    }
-
-    async findPost(social, url_post){
-        console.log("Url attuale: " + window.location.href + " Url post: " + url_post);
-        while(this.hasNextBtn && !isSamePost(window.location.href, url_post)){
-            try {
-                await this.goToNextPost(social);
-            }
-            catch (err) {
-                console.log("Ricevuto errore di raggiungimento nuovo post");
-                throw err;
-            }
-        }
-        console.log("Url attuale: " + window.location.href + " Url post: " + url_post);
     }
 }

@@ -4,10 +4,33 @@
 //autori commenti migliorato per non prendere replies '//article//h3[not(following-sibling::div[1]/img) and not(ancestor::ul/ancestor::li/ancestor::ul)]'
 
 class CommentScraper {
-    static scrapeComment(social){
+
+    constructor(comment_navigator){
+        this._commentNavigator = comment_navigator;
+        this._social = comment_navigator.social;
+    }
+
+    get commentNavigator(){
+        return this._commentNavigator;
+    }
+
+    set commentNavigator(comment_navigator){
+        this._commentNavigator = comment_navigator;
+    }
+
+    get social(){
+        return this._social;
+    }
+
+    set social(social){
+        this._social = social;
+    }
+
+    async scrapeAll(){
+        await this.commentNavigator.next();
         console.log("Inizio scraping dei commenti");
-        const listTextComment = XPathManager.getAll(SELECTORS[social].commentText);
-        const listAuthorComment = XPathManager.getAll(SELECTORS[social].commentAuthor);
+        const listTextComment = XPathManager.getAll(SELECTORS[this.social].commentText);
+        const listAuthorComment = XPathManager.getAll(SELECTORS[this.social].commentAuthor);
         console.log("Trovata lista testi commenti di lunghezza:", listTextComment.length);
         console.log("Trovata lista autori commenti di lunghezza:", listAuthorComment.length);
         let comments = [];
