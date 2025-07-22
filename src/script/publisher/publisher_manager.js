@@ -3,13 +3,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         case "publishComment":
             let social = message.social;
             console.log("Ricevuta richiesta di pubblicare un commento");
-            
-            let commentNavigator = new CommentNavigator(social);
-            let postNavigator = new PostNavigator(social);
-            let postResearcher = new PostResearcher(postNavigator);
-            let commentResearcher = new CommentResearcher(postResearcher, commentNavigator)
-            let commentPublisher = new CommentPublisher(commentResearcher);
-
             try {
                 await InstagramPageNavigator.goToProfile(social);
             }
@@ -24,13 +17,35 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 return;
             }
 
+            try {
+                await InstagramPageNavigator.openLastPost(social);
+            }
+            catch(err) {
+                chrome.runtime.sendMessage({
+                    action: "showError",
+                    error: {
+                        message: err.message,
+                        url: err.url
+                    }
+                });
+                return;
+            }
+
             const result = await chrome.storage.local.get('commentToPublish');
             const comments = result.commentToPublish;
+
+            const lastPostUrl = window.location.href;
+            
+            let commentNavigator = new CommentNavigator(social);
+            let postNavigator = new PostNavigator(lastPostUrl, social);
+            let postResearcher = new PostResearcher(postNavigator);
+            let commentResearcher = new CommentResearcher(postResearcher, commentNavigator)
+            let commentPublisher = new CommentPublisher(commentResearcher);
             
             for(const comment of comments){
                 
                 try {
-                    await InstagramPageNavigator.openLastPost(social);
+                    await commentPublisher.publish(comment.url, comment.author, comment.text, comment.replies);
                 }
                 catch(err) {
                     chrome.runtime.sendMessage({
@@ -42,9 +57,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                     });
                     return;
                 }
-                
+
                 try {
-                    await commentPublisher.publish(comment.url, comment.author, comment.text, comment.replies);
+                    await InstagramPageNavigator.openLastPost(social);
+                    postNavigator.postUrl = lastPostUrl;
                 }
                 catch(err) {
                     chrome.runtime.sendMessage({

@@ -51,7 +51,7 @@ function showError(message, url = null) {
 }
 
 document.getElementById("getPost").addEventListener("click", async () => {
-  chrome.runtime.sendMessage({ action: "getPost", tabId: instaTabId, social });
+  chrome.runtime.sendMessage({ action: "getPost", tabId: instaTabId, social: social });
 
   hide(document.getElementById("getPost"));
   hide(document.getElementById("messageContainer"));
@@ -63,7 +63,7 @@ document.getElementById("getPost").addEventListener("click", async () => {
 });
 
 document.getElementById("publishComment").addEventListener("click", () => {
-  chrome.runtime.sendMessage({ action: "publishComment", tabId: instaTabId, social });
+  chrome.runtime.sendMessage({ action: "publishComment", tabId: instaTabId, social: social });
 
   hide(document.getElementById("publishContainer"));
   hide(document.getElementById("raccoltaTitle"));
