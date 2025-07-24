@@ -17,6 +17,12 @@ const SELECTORS = {
     }
 }
 
+/* istanbul ignore next */
+// Export for use in Node environment (testing with Jest). Ignored in browsers
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = SELECTORS;
+}
+
 //xpath bottone replies '//article//button[.//*[contains(text(), "Visualizza le risposte")]]' //sembra andare anche '//article//div/button'
 //xpath per autori replies '//article//ul/li/ul//div/h3[not(following-sibling::div[1]/img)]'
 

@@ -9,3 +9,9 @@ class UrlError extends Error {
         return this._url;
     }
 }
+
+/* istanbul ignore next */
+// Export for use in Node environment (testing with Jest). Ignored in browsers
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = UrlError;
+}
