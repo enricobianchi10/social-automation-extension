@@ -1,6 +1,28 @@
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     switch (message.action){
         case "scrapePost":
+           /* const oldData = {
+                post1: {
+                    caption: "Hello",
+                    comments: {
+                    c1: { author: "Alice", text: "Nice post!" }
+                    }
+                }
+                };
+
+                const newData = {
+                post1: {
+                    caption: "Hello world!",
+                    comments: {
+                    c1: { author: "Alice", text: "Nice post!" },
+                    c2: { author: "Bob", text: "Great!" }
+                    }
+                }
+            };
+
+            const differences = DeepDiff.diff(oldData, newData);
+            console.log("Differenze:", differences); */
+
             let social = message.social;
             console.log("Ricevuta richiesta di scraping di tutti i post");
             try {

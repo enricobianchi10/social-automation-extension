@@ -1,3 +1,19 @@
+/*import { create } from 'https://esm.sh/jsondiffpatch';
+
+// Configurazione base (opzionale)
+const jsondiffpatch = create({
+  objectHash: function(obj) {
+    return obj.id || JSON.stringify(obj);
+  }
+});
+
+// Esempio di diff
+const a = { name: "Alice", age: 30 };
+const b = { name: "Bob", age: 30 };
+
+const delta = jsondiffpatch.diff(a, b);
+console.log("Differenza:", JSON.stringify(delta, null, 2)); */
+
 chrome.sidePanel
   .setPanelBehavior({ openPanelOnActionClick: true })
   .catch((error) => console.error(error));
