@@ -34,7 +34,7 @@ class CommentResearcher {
 
     async find(url_post, author_comment, text_comment){ //restituisce il puslante per rispondere al commento che ha autore e testo ricevuti
         try {
-            this.postResearcher.find(url_post);
+           await this.postResearcher.find(url_post);
         }
         catch(err){
             console.log("Ricevuto errore di raggiungimento nuovo post (da navigator)");
