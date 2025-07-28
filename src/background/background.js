@@ -124,6 +124,8 @@ console.log("Differenza jsondiffpatch:", JSON.stringify(delta, null, 2));
 console.log("Differenza deepdiff:", JSON.stringify(differences, null, 2)); 
 */
 
+let oldPostList;
+
 chrome.sidePanel
   .setPanelBehavior({ openPanelOnActionClick: true })
   .catch((error) => console.error(error));
@@ -131,31 +133,118 @@ chrome.sidePanel
 //riceve l'evento emesso dal pulsante del sidepanel
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     switch (message.action){
-        case 'getPost':
-            console.log("Ricevuta richiesta di ottenere dati del post");
-            chrome.tabs.sendMessage(message.tabId, {action: "scrapePost", social: message.social}); 
-            break;
         case 'savePost':
             console.log("Ricevuta richiesta di salvare il post");
             chrome.tabs.sendMessage(sender.tab.id, { action: "savePost", post: message.post }, (response) => {
                 sendResponse(response);
             });
             return true;
+    }
+})
+
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+    switch (message.action){
+        case 'getPost':
+            console.log("Ricevuta richiesta di ottenere dati del post");
+            await chrome.storage.local.set({status: "raccoltaInCorso"});
+            try {
+                oldPostList = await chrome.storage.local.get("postList");
+                console.log("Dati recuperati da storage:", oldPostList);
+            } catch (error) {
+                console.error("Errore nel recupero dati da storage:", error);
+                return;
+            }
+            chrome.tabs.sendMessage(message.tabId, {action: "scrapePost", social: message.social}); 
+            break;
         case 'finishedScrape':
             console.log("Ricevuta notifica di fine scraping");
-            chrome.runtime.sendMessage({action: "finishedScrape", lastPost: message.lastPost});
-            break;
-        case 'showError':
-            console.log("Ricevuta notifica di mostrare gli errori");
-            chrome.runtime.sendMessage({action: "showError", error: message.error});
+            await chrome.storage.local.set({status: "finished"});
+            try {
+                const newPostList = await chrome.storage.local.get("postList");
+                console.log("Nuovi dati recuperati da storage:", newPostList);
+                const diff = getDiff(oldPostList, newPostList);
+                let hasDiff = false;
+                if(!diff){ 
+                  console.log("Nessuna differenza");
+                }
+                if(diff) {
+                    console.log("C'è differenza");
+                    await fetchPostData(diff);
+                    hasDiff = true;
+                }
+                chrome.runtime.sendMessage({action: "finishedScrape", lastPost: message.lastPost, diff: hasDiff});
+            } catch (error) {
+                console.error("Errore nel recupero dati da storage:", error);
+                return;
+            }
             break;
         case 'publishComment':
             console.log("Ricevuta richiesta di postare un commento");
-            chrome.tabs.sendMessage(message.tabId, {action: "publishComment", social: message.social});
+            await chrome.storage.local.set({status: "pubblicazioneInCorso"});
+            const replies = await fetchGetData();
+            console.log('Risposta dal server:', replies);
+            chrome.tabs.sendMessage(message.tabId, {action: "publishComment", social: message.social, replies: replies});
+            break;
+        case 'showError':
+            console.log("Ricevuta notifica di mostrare gli errori");
+            await chrome.storage.local.set({status: "finished"});
+            chrome.runtime.sendMessage({action: "showError", error: message.error});
             break;
         case 'finishedPublish':
             console.log("Ricevuta notifica di fine pubblicazione commenti");
+            await chrome.storage.local.set({status: "finished"});
             chrome.runtime.sendMessage({action: "finishedPublish"});
             break;
     }
 })
+
+
+async function fetchPostData(data){
+    try {
+        const response = await fetch('https://webhook.site/4433d8c6-8dfc-46f3-815a-8f5df33f21f6', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        if (!response.ok) {
+            const errorText = await response.text(); // Prova a leggere il corpo dell'errore
+            throw new Error(`Errore HTTP: ${response.status} - ${errorText}`);
+        }
+        const responseData = await response.text(); 
+        return responseData; 
+    } catch (err) {
+        console.error('Errore durante il fetch o l\'elaborazione della risposta:', err);
+    }
+}
+
+async function fetchGetData(){
+    try {
+      const response = await fetch('https://webhook.site/4433d8c6-8dfc-46f3-815a-8f5df33f21f6', {
+          method: 'GET',
+          headers: {
+              'Accept': 'application/json'
+          }
+      });
+      if (!response.ok) {
+          const errorText = await response.text(); // Prova a leggere il corpo dell'errore
+          throw new Error(`Errore HTTP: ${response.status} - ${errorText}`);
+      }
+      const responseData = await response.json(); 
+      return responseData; 
+    } catch (err) {
+        console.error('Errore durante il fetch o l\'elaborazione della risposta:', err);
+    }
+}
+
+function getDiff(oldList, newList){
+    const differences = diff(oldList, newList, (path, key) => {
+        if(key === "_src"){
+            return true;
+        }
+        return undefined;
+    });
+    console.log("Differenza deepdiff:", JSON.stringify(differences, null, 2));
+    return differences;
+}

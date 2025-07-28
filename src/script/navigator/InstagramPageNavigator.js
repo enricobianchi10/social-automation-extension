@@ -21,6 +21,7 @@ class InstagramPageNavigator {
                 }
             }
             else console.log("Sei già nella pagina dell'ultimo post");
+            return;
         }
     }
 
