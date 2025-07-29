@@ -19,5 +19,9 @@
   "homepage": "https://github.com/enricobianchi10/social-automation-extension#readme",
   "devDependencies": {
     "jest": "^30.0.4"
+  },
+  "dependencies": {
+    "deep-diff": "^1.0.2",
+    "jsondiffpatch": "^0.7.3"
   }
 }

@@ -1,6 +1,7 @@
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     switch (message.action){
         case "scrapePost":
+
             let social = message.social;
             console.log("Ricevuta richiesta di scraping di tutti i post");
             try {
