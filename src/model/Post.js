@@ -40,3 +40,7 @@ class Post {
         this._number = number;
     }
 }
+
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = Post;
+}

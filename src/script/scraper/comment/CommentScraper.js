@@ -45,4 +45,10 @@ class CommentScraper {
     }
 }
 
+/* istanbul ignore next */
+// Export for use in Node environment (testing with Jest). Ignored in browsers
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = CommentScraper;
+}
+
 //problema che per ora prendono anche le replies se visibili

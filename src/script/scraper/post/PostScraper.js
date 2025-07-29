@@ -34,13 +34,16 @@ class PostScraper {
         this._social = social;
     }
 
-    #getPostNumber(){
-        const postNumber = XPathManager.getOne(SELECTORS[this.social].postNumber)?.textContent || "Numero di post non trovato";
-        if(!postNumber) console.log("Numero di post non trovato"); 
+    _getPostNumber(){
+        const postNumber = XPathManager.getOne(SELECTORS[this.social].postNumber)?.textContent;
+        if(!postNumber) {
+            console.log("Numero di post non trovato"); 
+            return 0;
+        }
         return Number(postNumber);
     } 
 
-    async #scrape(postNumber){
+    async _scrape(postNumber){
         console.log("Inizio scraping del post");
         const postUrl = window.location.href.split('?')[0];
         const postImg = XPathManager.getOne(SELECTORS[this.social].postImage);
@@ -60,10 +63,10 @@ class PostScraper {
     async scrapeAll(){
         console.log("Inizio scraping di tutti i post");
         let posts = [];
-        let postNumber = this.#getPostNumber();
+        let postNumber = this._getPostNumber();
         console.log("Ricevuto numero di post");
         while(this.postNavigator.hasNextBtn){
-            let post = await this.#scrape(postNumber); 
+            let post = await this._scrape(postNumber); 
             posts.push(post);
             postNumber--;
             try {
@@ -76,4 +79,10 @@ class PostScraper {
         console.log("Terminato scraping dei post");
         return posts;
     }
+}
+
+/* istanbul ignore next */
+// Export for use in Node environment (testing with Jest). Ignored in browsers
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = PostScraper;
 }

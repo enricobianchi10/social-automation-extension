@@ -93,7 +93,7 @@ describe('InstagramPageNavigator', () => {
         expect(isSamePost).not.toHaveBeenCalled();
     });
 
-    test('should click link and wait for URL changes if link found and not same post', async () => {
+    test('openLastPost should click link and wait for URL changes if link found and not same post', async () => {
         const mockPostLink = { href: last_post_url, click: jest.fn() };
         XPathManager.getOne.mockReturnValue(mockPostLink);
 
@@ -117,7 +117,7 @@ describe('InstagramPageNavigator', () => {
         expect(window.location.href).toBe(last_post_url);
     });
 
-    test('should log if link found and is same post', async () => {
+    test('openLastPost should log if link found and is same post', async () => {
         const mockPostLink = { href: init_url, click: jest.fn() }; // link punta alla pagina corrente
         XPathManager.getOne.mockReturnValue(mockPostLink);
 
@@ -128,6 +128,92 @@ describe('InstagramPageNavigator', () => {
         expect(mockPostLink.click).not.toHaveBeenCalled();
         expect(ChangeDetector.waitForUrlChanges).not.toHaveBeenCalled();
         expect(consoleLogSpy).toHaveBeenCalledWith("Sei già nella pagina dell'ultimo post");
+    });
+
+    test('openLastPost should re-throw error if waitForUrlChanges fails when opening last post', async () => {
+        const mockPostLink = { href: last_post_url, click: jest.fn() };
+        XPathManager.getOne.mockReturnValue(mockPostLink);
+        isSamePost.mockReturnValue(false);
+
+        const mockError = new Error('Failed to load last post');
+        ChangeDetector.waitForUrlChanges.mockRejectedValue(mockError);
+
+        await expect(InstagramPageNavigator.openLastPost(social)).rejects.toThrow(mockError);
+
+        expect(mockPostLink.click).toHaveBeenCalledTimes(1);
+        expect(ChangeDetector.waitForUrlChanges).toHaveBeenCalledWith(init_url);
+    });
+
+
+    //test per goToProfile
+
+    test('goToProfile should log if no profile link is found', async () => {
+        // XPathManager.getOne restituisce null di default
+        await InstagramPageNavigator.goToProfile(social);
+
+        expect(XPathManager.getOne).toHaveBeenCalledWith(SELECTORS[social].profileLink);
+        expect(consoleLogSpy).toHaveBeenCalledWith("Link per andare sul profilo non trovato");
+        expect(ChangeDetector.waitForUrlChanges).not.toHaveBeenCalled();
+        expect(ChangeDetector.checkIfPostLoad).not.toHaveBeenCalled();
+        expect(ChangeDetector.waitForLoading).not.toHaveBeenCalled();
+    });
+
+    test('goToProfile should click link, wait for URL changes, and wait for posts if link found', async () => {
+        const mockProfileLink = { click: jest.fn() };
+        XPathManager.getOne.mockReturnValue(mockProfileLink);
+        ChangeDetector.checkIfPostLoad.mockReturnValue(false); // Post non caricati, waitForLoading viene eseguita
+
+        // Simula cambio URL
+        ChangeDetector.waitForUrlChanges.mockImplementation(async (oldUrl) => {
+            currentMockUrl = profile_url; 
+            return Promise.resolve(true);
+        });
+
+        await InstagramPageNavigator.goToProfile(social);
+
+        expect(XPathManager.getOne).toHaveBeenCalledWith(SELECTORS[social].profileLink);
+        expect(mockProfileLink.click).toHaveBeenCalledTimes(1);
+        expect(ChangeDetector.waitForUrlChanges).toHaveBeenCalledWith(init_url);
+        expect(currentMockUrl).toBe(profile_url); 
+        expect(ChangeDetector.checkIfPostLoad).toHaveBeenCalledWith(social);
+        expect(ChangeDetector.waitForLoading).toHaveBeenCalledTimes(1);
+    });
+
+    test('goToProfile should click link, wait for URL changes, but not wait for posts if already loaded', async () => {
+        const mockProfileLink = { click: jest.fn() };
+        XPathManager.getOne.mockReturnValue(mockProfileLink);
+        ChangeDetector.checkIfPostLoad.mockReturnValue(true); // Posts already loaded
+
+        // Simulate URL change
+        ChangeDetector.waitForUrlChanges.mockImplementation(async (oldUrl) => {
+            currentMockUrl = profile_url; // Update mock URL
+            return Promise.resolve(true);
+        });
+
+        await InstagramPageNavigator.goToProfile(social);
+
+        expect(XPathManager.getOne).toHaveBeenCalledWith(SELECTORS[social].profileLink);
+        expect(mockProfileLink.click).toHaveBeenCalledTimes(1);
+        expect(ChangeDetector.waitForUrlChanges).toHaveBeenCalledWith(init_url);
+        expect(currentMockUrl).toBe(profile_url);
+        expect(ChangeDetector.checkIfPostLoad).toHaveBeenCalledWith(social);
+        expect(ChangeDetector.waitForLoading).not.toHaveBeenCalled();
+    });
+
+    test('goToProfile should re-throw error if waitForUrlChanges fails when going to profile', async () => {
+
+        const mockProfileLink = { click: jest.fn() };
+        XPathManager.getOne.mockReturnValue(mockProfileLink);
+
+        const mockError = new Error('Failed to load profile page');
+        ChangeDetector.waitForUrlChanges.mockRejectedValue(mockError);
+
+        await expect(InstagramPageNavigator.goToProfile(social)).rejects.toThrow(mockError);
+
+        expect(mockProfileLink.click).toHaveBeenCalledTimes(1);
+        expect(ChangeDetector.waitForUrlChanges).toHaveBeenCalledWith(init_url);
+        expect(ChangeDetector.checkIfPostLoad).not.toHaveBeenCalled();
+        expect(ChangeDetector.waitForLoading).not.toHaveBeenCalled();
     });
 
 })
