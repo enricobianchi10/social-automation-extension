@@ -23,8 +23,12 @@
   },
   "jest": {
     "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/**/*.test.js"
+    ],
     "moduleNameMapper": {
-    "@src/(.*)$": "<rootDir>/src/$1"
+      "@src/(.*)$": "<rootDir>/src/$1"
     }
   }
 }

@@ -1,4 +1,3 @@
-//xpath per bottone avanti '//button[.//*[@aria-label="Avanti"]]' (si può anche fare inerente al testo dentro e non aria-label)
 class PostNavigator {
     constructor(post_url, social){
         this._postUrl = post_url;
@@ -52,4 +51,10 @@ class PostNavigator {
             }
         }
     }
+}
+
+/* istanbul ignore next */
+// Export for use in Node environment (testing with Jest). Ignored in browsers
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = PostNavigator;
 }
