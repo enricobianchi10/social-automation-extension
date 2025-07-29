@@ -50,28 +50,24 @@ function showError(message, url = null) {
   show(errorContainer);
 }
 
-document.getElementById("getPost").addEventListener("click", async () => {
+document.getElementById("getPost").addEventListener("click", () => {
   chrome.runtime.sendMessage({ action: "getPost", tabId: instaTabId, social: social });
 
-  hide(document.getElementById("getPost"));
   hide(document.getElementById("messageContainer"));
   hide(document.getElementById("downloadContainer"));
   hide(document.getElementById("publishContainer"));
-  hide(document.getElementById("pubblicaTitle"));
 
   showStatus("Raccolta dati in corso...", "Attendi il termine della raccolta dei dati senza interagire con la pagina");
 });
 
-document.getElementById("publishComment").addEventListener("click", () => {
+document.getElementById("publishComment").addEventListener("click", async () => {
   chrome.runtime.sendMessage({ action: "publishComment", tabId: instaTabId, social: social });
 
   hide(document.getElementById("publishContainer"));
-  hide(document.getElementById("raccoltaTitle"));
-  hide(document.getElementById("getPost"));
   hide(document.getElementById("downloadContainer"));
   hide(document.getElementById("messageContainer"));
 
-  showStatus("Inserimento del commento in corso...", "Attendi il termine dell'inserimento del commento senza interagire con la pagina");
+  showStatus("Inserimento delle risposte ai commenti in corso...", "Attendi il termine dell'inserimento delle risposte senza interagire con la pagina");
 });
 
 document.getElementById("downloadData").addEventListener("click", async () => {
@@ -85,60 +81,45 @@ document.getElementById("downloadData").addEventListener("click", async () => {
   }
 });
 
-document.getElementById("fileInput").addEventListener("change", async () => {
-  const file = document.getElementById("fileInput").files[0];
-  const publishContainer = document.getElementById("publishContainer");
-
-  publishContainer.querySelectorAll("p").forEach(p => p.remove());
-
-  const statusFile = document.createElement("p");
-  if (!file) {
-    setText(statusFile, "Nessun file selezionato.");
-    publishContainer.appendChild(statusFile);
-    return;
-  }
-
-  try {
-    const text = await file.text();
-    const data = JSON.parse(text);
-    validateData(data);
-    setText(statusFile, "File valido: " + data.length + " commenti da pubblicare");
-    show(document.getElementById("publishComment"));
-    await chrome.storage.local.set({ commentToPublish: data });
-  } catch (err) {
-    setText(statusFile, "Il file JSON selezionato non è nel formato corretto");
-  }
-
-  publishContainer.appendChild(statusFile);
-});
-
 document.addEventListener("DOMContentLoaded", async () => {
-  const messageContainer = document.getElementById("messageContainer");
-  const getPostButton = document.getElementById("getPost");
-
-  const tabs = await chrome.tabs.query({ url: "*://www.instagram.com/*" });
-
-  if (tabs.length === 0) {
-    setText(messageContainer, "Apri una pagina di Instagram ed effettua il login del profilo per abilitare la raccolta dati");
-    show(messageContainer);
-    hide(getPostButton);
-    return;
+  const result = await chrome.storage.local.get("status");
+  const status = result.status;
+  if(status === "raccoltaInCorso"){
+    showStatus("Raccolta dati in corso...", "Attendi il termine della raccolta dei dati senza interagire con la pagina");
   }
+  else if(status === "pubblicazioneInCorso"){
+    showStatus("Inserimento delle risposte ai commenti in corso...", "Attendi il termine dell'inserimento delle risposte senza interagire con la pagina");
+  }
+  else {
+    await chrome.storage.local.set({status: "finished"});
+    const messageContainer = document.getElementById("messageContainer");
+    const getPostButton = document.getElementById("getPost");
 
-  // Verifica cookie (autenticazione)
-  instaTabId = await checkCookies(tabs);
+    const tabs = await chrome.tabs.query({ url: "*://www.instagram.com/*" });
 
-  if (instaTabId) {
-    setText(messageContainer, "Fai click sul pulsante per iniziare la raccolta dati dei post");
-    show(messageContainer, getPostButton);
-  } else {
-    setText(messageContainer, "Effettua prima il login del profilo per abilitare la raccolta dati");
-    show(messageContainer);
-    hide(getPostButton);
+    if (tabs.length === 0) {
+      setText(messageContainer.querySelector('p'), "Apri una pagina di Instagram ed effettua il login del profilo per abilitare la raccolta dati");
+      show(messageContainer);
+      hide(getPostButton);
+      return;
+    }
+
+    // Verifica cookie (autenticazione)
+    instaTabId = await checkCookies(tabs);
+
+    if (instaTabId) {
+      setText(messageContainer.querySelector('p'), "Fai click sul pulsante per iniziare la raccolta dati dei post");
+      show(messageContainer);
+      show(getPostButton);
+    } else {
+      setText(messageContainer.querySelector('p'), "Effettua prima il login del profilo per abilitare la raccolta dati");
+      show(messageContainer);
+      hide(getPostButton);
+    }
   }
 });
 
-chrome.runtime.onMessage.addListener((message) => {
+chrome.runtime.onMessage.addListener(async (message) => {
   const messageContainer = document.getElementById("messageContainer");
   const publishContainer = document.getElementById("publishContainer");
   const downloadContainer = document.getElementById("downloadContainer");
@@ -153,10 +134,16 @@ chrome.runtime.onMessage.addListener((message) => {
       link.textContent = "Clicca qui per raggiungere l'ultimo post salvato!";
       document.getElementById("statusContainer").appendChild(link);
       show(downloadContainer);
-      show(messageContainer);
       show(getPostBtn);
-      show(publishContainer);
-      show(document.getElementById("pubblicaTitle"));
+      if(message.diff){
+        setText(messageContainer.querySelector('p'),"Sono stati rilevati cambiamenti rispetto l'ultima raccolta dati.");
+        show(messageContainer);
+        show(publishContainer);
+      }
+      else {
+        setText(messageContainer.querySelector('p'),"Non sono stati rilevati cambiamenti rispetto l'ultima raccolta dati.");
+        show(messageContainer);
+      }
       break;
 
     case "showError":
@@ -195,29 +182,6 @@ function cleanupDownload() {
   if (urlBlob) URL.revokeObjectURL(urlBlob);
   urlBlob = null;
   currentDownloadId = null;
-}
-
-function validateData(data) {
-  if (!Array.isArray(data)) throw new Error("Il file JSON deve contenere un array di oggetti.");
-
-  data.forEach((item, i) => {
-    const index = i + 1;
-    if (typeof item !== "object" || item === null) throw new Error(`Elemento ${index} non è un oggetto valido.`);
-
-    const requiredFields = ["url", "author", "text", "replies"];
-    requiredFields.forEach((field) => {
-      if (!(field in item)) throw new Error(`Elemento ${index} manca il campo '${field}'.`);
-      if (typeof item[field] !== "string" || item[field].trim() === "") {
-        throw new Error(`Il campo '${field}' in elemento ${index} deve essere una stringa non vuota.`);
-      }
-    });
-
-    try {
-      new URL(item.url);
-    } catch {
-      throw new Error(`Il campo 'url' in elemento ${index} non è un URL valido.`);
-    }
-  });
 }
 
 async function downloadData() {

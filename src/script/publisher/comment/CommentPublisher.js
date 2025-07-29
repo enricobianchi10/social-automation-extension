@@ -40,12 +40,12 @@ class CommentPublisher {
         const repliesTextArea = XPathManager.getOne(SELECTORS[this.social].repliesTextArea);
         if(!repliesTextArea) console.log("Area di testo per la replies non trovata");
         else console.log("Area di testo per la replies trovata!");
-        const publishButton = XPathManager.getOne(SELECTORS[this.social].publishCommentButton);
-        if(!publishButton) console.log("Pulsante per pubblicare replies non trovato");
-        else console.log("Pulsante per pubblicare replies trovato");
         text_replies = repliesTextArea.textContent + text_replies;
         this.#setTextComment(text_replies, repliesTextArea);
         console.log("settato testo della replies");
+        const publishButton = XPathManager.getOne(SELECTORS[this.social].publishCommentButton);
+        if(!publishButton) console.log("Pulsante per pubblicare replies non trovato");
+        else console.log("Pulsante per pubblicare replies trovato");
         publishButton.click();
     }
 

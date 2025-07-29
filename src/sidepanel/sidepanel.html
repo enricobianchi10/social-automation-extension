@@ -8,23 +8,24 @@
 </head>
 <body>
   <div class="popup-container">
-    <h1 id="raccoltaTitle">Raccolta Dati</h1>
 
-    <div id="messageContainer" class="info-box hidden"></div>
+    <h1>Instagram Automation Tool</h1>
 
-    <button id="getPost" class="btn primary">Inizia raccolta dati</button>
+    <div id="messageContainer" class="info-box hidden">
+      <h2 id="raccoltaTitle">Raccolta Dati</h1>
+      <p id="messageParagraph"></p>
+      <button id="getPost" class="btn primary">Inizia raccolta dati</button>
+    </div>
 
     <div id="downloadContainer" class="download-box hidden">
       <p>Premi per scaricare i dati raccolti come file JSON</p>
       <button id="downloadData" class="btn secondary">Scarica i dati raccolti</button>
     </div>
 
-    <h1 id="pubblicaTitle" class="hidden">Pubblica Commenti</h1>
-
     <div id="publishContainer" class="publish-box hidden">
-      <label for="fileInput">Seleziona il file JSON con i commenti da pubblicare:</label>
-      <input type="file" id="fileInput" accept=".json" />
-      <button id="publishComment" class="btn primary hidden">Pubblica risposte ai commenti</button>
+      <h2 id="pubblicaTitle">Pubblica nuovi commenti</h1>
+      <p id="messageParagraph">Premendo il pulsante seguente verranno pubblicate le risposte ai nuovi commenti rilevati.</p>
+      <button id="publishComment" class="btn primary">Pubblica risposte ai commenti</button>
     </div>
 
     <div id="statusContainer" class="status-box hidden"></div>
