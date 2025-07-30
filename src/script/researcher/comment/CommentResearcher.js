@@ -35,6 +35,10 @@ class CommentResearcher {
     async find(url_post, author_comment, text_comment){ //restituisce il puslante per rispondere al commento che ha autore e testo ricevuti
         try {
            await this.postResearcher.find(url_post);
+           if(this.postResearcher.postNavigator.postUrl !== url_post){
+             console.log("Post in cui cercare il commento non trovato, url post non trovato: " + url_post);
+             return false;
+           }
         }
         catch(err){
             console.log("Ricevuto errore di raggiungimento nuovo post (da navigator)");
@@ -53,4 +57,10 @@ class CommentResearcher {
             return false;
         }
     }
+}
+
+/* istanbul ignore next */
+// Export for use in Node environment (testing with Jest). Ignored in browsers
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = CommentResearcher;
 }

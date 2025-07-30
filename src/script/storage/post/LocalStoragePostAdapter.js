@@ -22,7 +22,7 @@ class LocalStoragePostAdapter extends StorageService {
 
     async get(number){
         const result = await chrome.storage.local.get("postList");
-        const post = result.postList?.[number];
+        const post = result.postList?.["post_" + number];
         if(!post) return null;
         return new Post(post._number, post._url, post._scr, post._caption, post._likes_number, post._comments);
     }
@@ -33,3 +33,8 @@ class LocalStoragePostAdapter extends StorageService {
     }
 }
 
+/* istanbul ignore next */
+// Export for use in Node environment (testing with Jest). Ignored in browsers
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = LocalStoragePostAdapter;
+}

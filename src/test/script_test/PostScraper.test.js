@@ -28,7 +28,6 @@ jest.mock('@src/model/Post');
 describe('PostScraper', () => {
     const social = 'instagram';
     const init_url = 'http://instagram.com/p/first_post/';
-    const next_url = 'http://instagram.com/p/second_post/';
 
     let postScraper;
     let mockPostNavigator; 
@@ -139,7 +138,7 @@ describe('PostScraper', () => {
 
     //test per _scrape()
 
-     test('should scrape post details and comments', async () => {
+     test('scrape() should scrape post details and comments', async () => {
         const mockPostNumber = 10;
         const mockPostImgNode = { src: 'http://example.com/img.jpg' };
         const mockPostCaptionNode = { innerText: 'Test caption' };
@@ -177,7 +176,7 @@ describe('PostScraper', () => {
         expect(post.comments).toEqual(mockComments);
     });
 
-    test('should handle missing image (video) and default caption/likes', async () => {
+    test('scrape() should handle missing image (video) and default caption/likes', async () => {
         const mockPostNumber = 5;
         XPathManager.getOne.mockReturnValue(null); // Nessuna immagine, caption, likes trovati
         mockCommentScraper.scrapeAll.mockResolvedValue([]); // Nessun commento
@@ -190,7 +189,7 @@ describe('PostScraper', () => {
         expect(Post).toHaveBeenCalledWith(mockPostNumber, init_url, "Video", "Nessuna caption", "0", []);
     });
 
-    test('should pass through scrapeAll error from commentScraper', async () => {
+    test('scrape() should pass through scrapeAll error from commentScraper', async () => {
         const mockError = new Error('Comment scraping failed');
         mockCommentScraper.scrapeAll.mockRejectedValue(mockError);
 
