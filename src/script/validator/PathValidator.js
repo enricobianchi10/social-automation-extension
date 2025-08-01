@@ -86,10 +86,10 @@ class PathValidator {
                 this._addError(new ParseError("Autori dei commenti non trovati", SELECTORS[this.social].commentAuthor));
             }
             if(listTextComment.length < 20){
-                this._addError(new ParseError("Numero totale di commenti trovati errato " + listTextComment.length, SELECTORS[this.social].commentText));
+                this._addError(new ParseError("Numero totale di commenti trovati errato", SELECTORS[this.social].commentText));
             }
             if(listAuthorComment.length < 20){
-                this._addError(new ParseError("Numero totale di autori dei commenti trovati errato " + listAuthorComment.length, SELECTORS[this.social].commentAuthor));
+                this._addError(new ParseError("Numero totale di autori dei commenti trovati errato", SELECTORS[this.social].commentAuthor));
             }
             return;
         }
