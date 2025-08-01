@@ -1,105 +1,159 @@
+:root {
+  --primary-color: #5558e0;
+  --primary-hover: #4548c0;
+  --secondary-color: #e0e2ff;
+  --secondary-text: #3c3e8a;
+  
+  --success-bg: #e6f4ea;
+  --success-border: #38b15d;
+  --success-text: #1e6c38;
+  
+  --error-bg: #fdeded;
+  --error-border: #dc3545;
+  --error-text: #b0273a;
+  
+  --background-color: #f7f9fc;
+  --card-bg: #ffffff;
+  --text-dark: #212529;
+  --text-light: #6c757d;
+  --border-color: #e9ecef;
+}
+
 body {
   width: 100%;
   min-width: 320px;
-  padding: 1rem;
-  font-family: Verdana, sans-serif;
-  background-color: #ffffff;
-  color: #333;
+  padding: 1.5rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-dark);
   box-sizing: border-box;
-  overflow-x: hidden; /* Evita la barra orizzontale */
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+.sidepanel-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Ho aumentato nuovamente il gap tra le card */
+}
+
+.panel-header {
+  text-align: center;
+  margin-bottom: 0;
 }
 
 h1 {
-  font-size: 1.7rem;
-  margin-bottom: 1rem;
-  text-align: center;
-  color: #800149;
+  font-size: 1.6rem;
+  margin: 0;
+  color: var(--primary-color);
 }
 
 h2 {
-  font-size: 1.4rem;
-  margin-bottom: 1rem;
-  text-align: center;
-  color: #222;
+  font-size: 1.15rem;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: var(--text-dark);
 }
 
-.popup-container {
+.card {
+  padding: 1.25rem; 
+  border-radius: 12px;
+  background-color: var(--card-bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
-  gap: 1.25rem; /* più aria tra le sezioni */
+  gap: 0.75rem;
+  margin: 0; /* Assicurati che non ci siano margini esterni a rompere il layout */
 }
 
-.info-box,
-.error-box,
-.status-box,
-.download-box,
-.publish-box {
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
+.card-text {
   font-size: 0.95rem;
-  background-color: #f5f5f5;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  color: var(--text-light);
 }
 
 .hidden {
   display: none !important;
 }
 
-.error-box {
-  background-color: #ffe6e6;
-  color: #cc0000;
-  box-shadow: 0 1px 3px rgba(204, 0, 0, 0.2);
-}
-
-.status-box h2 {
-  color: #2e7d32;
-  font-size: 1.1rem;
-  margin-bottom: 0.3rem;
-}
-
-.status-box p {
-  margin: 0.2rem 0;
-  color: #555;
-}
-
-.download-box {
-  background-color: #fafafa;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-}
-
-.download-box p {
-  margin-bottom: 0.75rem;
-  font-size: 0.95rem;
-  color: #444;
-}
-
-.publish-box p {
-  margin: 0.5rem 0 1rem;
-  font-size: 0.95rem;
-  color: #444;
-}
-
-button {
-  padding: 0.6rem 1rem;
+/* Stili dei bottoni */
+.btn {
+  padding: 0.75rem 1rem;
   font-size: 1rem;
   cursor: pointer;
   border: none;
-  border-radius: 6px;
-  background-color: #1976d2;
-  color: white;
-  transition: background-color 0.3s ease;
+  border-radius: 8px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
   width: 100%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   font-weight: 600;
-  margin-top: 0.5rem; /* Spazio sopra ogni bottone */
 }
 
-button:hover {
-  background-color: #115293;
+.btn.primary {
+  background-color: var(--primary-color);
+  color: white;
 }
 
-input[type="file"] {
-  margin-top: 0.75rem;
-  width: 100%;
+.btn.primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn.secondary {
+  background-color: var(--secondary-color);
+  color: var(--secondary-text);
+}
+
+.btn.secondary:hover {
+  background-color: #d1d4ff;
+}
+
+/* Contenitori specifici con colori e bordi migliorati */
+.info-card,
+.download-card,
+.publish-card {
+  border-left: 4px solid var(--primary-color);
+}
+
+.status-card {
+  border-left: 4px solid var(--success-border);
+  background-color: var(--success-bg);
+  color: var(--success-text);
+}
+.status-card h2 {
+  color: var(--success-text);
+}
+
+.error-card {
+  border-left: 4px solid var(--error-border);
+  background-color: var(--error-bg);
+  color: var(--error-text);
+}
+
+.error-card h2 {
+  color: var(--error-text);
+}
+
+.error-card a {
+  color: var(--error-text);
+  font-weight: bold;
+}
+
+/* Stile per la lista di errori nel contenitore errori */
+.error-card ul {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.error-card ul li {
+  padding: 0.75rem;
+  background-color: #f5c6cb;
+  border: 1px solid #f5c6cb;
+  border-radius: 6px;
+  color: #721c24;
+  font-size: 0.9rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
