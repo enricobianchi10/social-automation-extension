@@ -130,7 +130,7 @@ chrome.sidePanel
   .setPanelBehavior({ openPanelOnActionClick: true })
   .catch((error) => console.error(error));
 
-//riceve l'evento emesso dal pulsante del sidepanel
+//riceve eventi emessi che non richiedono esecuzione di funzioni asincrone (nessun problema con sendResponse)
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     switch (message.action){
         case 'savePost':
@@ -139,9 +139,37 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 sendResponse(response);
             });
             return true;
+        case 'validatePath':
+            chrome.tabs.create(
+              {
+                url: 'https://www.instagram.com/account_prova1212/', // URL del profilo snapshot
+                active: false,
+              },
+              (tab) => {
+                const tabId = tab.id;
+
+                const listener = (updatedTabId, changeInfo) => {
+                  if (updatedTabId === tabId && changeInfo.status === 'complete') {
+                    chrome.tabs.onUpdated.removeListener(listener);
+                    console.log("Tab di verifica aperto.");
+                    chrome.tabs.sendMessage(tabId, { action: "validatePath", social: message.social });
+                  }
+                };
+
+                chrome.tabs.onUpdated.addListener(listener);
+              }
+            ); 
+            break;;
+        case 'finishedValidation':
+            chrome.tabs.remove(sender.tab.id, () => {
+              console.log("Tab di verifica chiuso.");
+            });
+            chrome.runtime.sendMessage({action: "finishedValidation", errors: message.errors});
+            break;
     }
 })
 
+//riceve eventi e deve gestire asincronismo
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     switch (message.action){
         case 'getPost':
@@ -175,7 +203,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 chrome.runtime.sendMessage({action: "finishedScrape", lastPost: message.lastPost, diff: hasDiff});
             } catch (error) {
                 console.error("Errore nel recupero dati da storage:", error);
-                return;
+                break;
             }
             break;
         case 'publishComment':

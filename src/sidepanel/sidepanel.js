@@ -50,6 +50,24 @@ function showError(message, url = null) {
   show(errorContainer);
 }
 
+function showParsingErrors(errors){
+  const errorContainer = document.getElementById("errorContainer");
+  clearChildren(errorContainer);
+  const titleEl = document.createElement("h2");
+  setText(titleEl, "Errore nella verifica automatica della struttura della pagina!");
+  errorContainer.appendChild(titleEl);
+  const errorsList = document.createElement("ul");
+  for(const err of errors){
+    const liErr = document.createElement("li");
+    if(err.selector){
+      setText(liErr, err.message + ` (XPath: ${err.selector})`);
+    } else setText(liErr, err.message);
+    errorsList.appendChild(liErr);
+  }
+  errorContainer.appendChild(errorsList);
+  show(errorContainer);
+}
+
 document.getElementById("getPost").addEventListener("click", () => {
   chrome.runtime.sendMessage({ action: "getPost", tabId: instaTabId, social: social });
 
@@ -96,8 +114,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const getPostButton = document.getElementById("getPost");
 
     const tabs = await chrome.tabs.query({ url: "*://www.instagram.com/*" });
+    const urlToExclude = "https://www.instagram.com/account_prova1212/";
 
-    if (tabs.length === 0) {
+    const filteredTabs = tabs.filter(tab => tab.url !== urlToExclude);
+
+    if (filteredTabs.length === 0) {
       setText(messageContainer.querySelector('p'), "Apri una pagina di Instagram ed effettua il login del profilo per abilitare la raccolta dati");
       show(messageContainer);
       hide(getPostButton);
@@ -105,12 +126,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Verifica cookie (autenticazione)
-    instaTabId = await checkCookies(tabs);
+    instaTabId = await checkCookies(filteredTabs);
 
     if (instaTabId) {
-      setText(messageContainer.querySelector('p'), "Fai click sul pulsante per iniziare la raccolta dati dei post");
-      show(messageContainer);
-      show(getPostButton);
+      showStatus("Analisi in corso...", "Analisi del layout Instagram in corso, attendi il termine del caricamento senza interagire con le pagine Instagram");
+      chrome.runtime.sendMessage({ action: "validatePath", social: social});
     } else {
       setText(messageContainer.querySelector('p'), "Effettua prima il login del profilo per abilitare la raccolta dati");
       show(messageContainer);
@@ -123,7 +143,6 @@ chrome.runtime.onMessage.addListener(async (message) => {
   const messageContainer = document.getElementById("messageContainer");
   const publishContainer = document.getElementById("publishContainer");
   const downloadContainer = document.getElementById("downloadContainer");
-  const getPostBtn = document.getElementById("getPost");
 
   switch (message.action) {
     case "finishedScrape":
@@ -134,7 +153,6 @@ chrome.runtime.onMessage.addListener(async (message) => {
       link.textContent = "Clicca qui per raggiungere l'ultimo post salvato!";
       document.getElementById("statusContainer").appendChild(link);
       show(downloadContainer);
-      show(getPostBtn);
       if(message.diff){
         setText(messageContainer.querySelector('p'),"Sono stati rilevati cambiamenti rispetto l'ultima raccolta dati.");
         show(messageContainer);
@@ -153,9 +171,20 @@ chrome.runtime.onMessage.addListener(async (message) => {
     case "finishedPublish":
       showStatus("Pubblicazione dei commenti ai post terminata con successo");
       show(messageContainer);
-      show(getPostBtn);
-      show(document.getElementById("raccoltaTitle"));
       hide(downloadContainer);
+      break;
+
+    case "finishedValidation":
+      errors = message.errors;
+      if (errors.length === 0) {
+        hide(document.getElementById("statusContainer"));
+        setText(messageContainer.querySelector('p'), "Fai click sul pulsante per iniziare la raccolta dati dei post");
+        show(messageContainer);
+      }
+      else {
+        hide(document.getElementById("statusContainer"));
+        showParsingErrors(errors);
+      }
       break;
   }
 });

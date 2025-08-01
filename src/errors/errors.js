@@ -9,3 +9,14 @@ class UrlError extends Error {
         return this._url;
     }
 }
+class ParseError extends Error {
+  constructor(message, selector) {
+    super(message);
+    this._selector = selector;
+  }
+
+  get selector(){
+    return this._selector;
+  }
+}
+

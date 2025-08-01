@@ -41,7 +41,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                         url: err.url
                     }
                 });
-                return;
+                break;
             }
 
             try {
@@ -55,7 +55,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                         url: err.url
                     }
                 });
-                return;
+                break;
             }
 
             const comments = message.replies;
@@ -82,7 +82,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                             url: err.url
                         }
                     });
-                    return;
+                    break;
                 }
 
                 try {
@@ -97,7 +97,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                             url: err.url
                         }
                     });
-                    return;
+                    break;
                 }
             }
 
@@ -105,5 +105,4 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             chrome.runtime.sendMessage({ action: "finishedPublish"});
             break;
     }
-    return true;
 })
