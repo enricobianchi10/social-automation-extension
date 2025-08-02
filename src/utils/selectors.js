@@ -1,8 +1,8 @@
 const SELECTORS = {
     instagram: {
-        commentText: '//article//h3/following-sibling::div[1]/span', //xpath per ottenere il testo dei commenti
+        commentText: '//article//h3/following-sibling::div[1]/span[not(ancestor::ul/ancestor::li/ancestor::ul)]', //xpath per ottenere il testo dei commenti
         newCommentsButton: '//li//button[.//*[name() = "circle"]]', //xpath per ottenere il pulsante per caricare nuovi commenti
-        commentAuthor: '//article//h3[not(following-sibling::div[1]/img)]', //xpath per ottenere gli autori dei commenti
+        commentAuthor: '//article//h3[not(following-sibling::div[1]/img) and not(ancestor::ul/ancestor::li/ancestor::ul)]', //xpath per ottenere gli autori dei commenti (escluse replies)
         newPostButton: '//div[contains(@class, "_aaqg")]/button', //per ora tengo così ma soluzione con la classe non mi convince
         //quello sotto non funziona raggiunta l'ultimo post perchè figlio unico diventa il bottone per tornare indietro e continua avanti-indietro
         postImage: '//article//div/img[@alt]', //xpath per ottenere l'immagine del post (trova tutte le immagini del carosello, la prima è quella visualizzata)

@@ -5,7 +5,8 @@
   "description": "Estensione Chrome per automatizzare l'interazione con i social network.",
   
   "host_permissions": [
-    "*://www.instagram.com/*"
+    "*://www.instagram.com/*",
+    "https://webhook.site/"
   ],
 
   "permissions": [
