@@ -15,7 +15,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                         url: err.url
                     }
                 });
-                return;
+                break;
             }
             
             try {
@@ -29,7 +29,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                         url: err.url
                     }
                 });
-                return;
+                break;
             }
             
             const lastPostUrl = window.location.href;
@@ -52,15 +52,15 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                         url: err.url
                     }
                 });
-                return;
+                break;
             }
 
             for(const post of posts){
                 await sendSavePostMessage(post);
             }
             chrome.runtime.sendMessage({ action: "finishedScrape", lastPost: postScraper.postNavigator.postUrl});
+            break;
     }
-    return true;
 })
 
 async function sendSavePostMessage(post) {
