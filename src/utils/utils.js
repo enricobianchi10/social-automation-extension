@@ -27,6 +27,7 @@ async function generateCommentId(author, text) {
 // assicurati di includere isSamePost qui.
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
   module.exports = {
+    delay: delay,
     isSamePost: isSamePost, // Esporta isSamePost tramite CommonJS
     extractPostId: extractPostId,
     generateCommentId: generateCommentId

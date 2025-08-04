@@ -7,7 +7,7 @@ const XPathManager = require('@src/script/manager/XPathManager');
 global.XPathManager = XPathManager;
 const SELECTORS = require('@src/utils/selectors');
 global.SELECTORS = SELECTORS;
-const UrlError = require('@src/errors/errors');
+const { UrlError } = require('@src/errors/errors');
 global.UrlError = UrlError;
 
 jest.mock('@src/script/manager/XPathManager');
