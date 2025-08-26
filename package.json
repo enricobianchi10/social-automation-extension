@@ -24,8 +24,9 @@
   "jest": {
     "collectCoverage": true,
     "collectCoverageFrom": [
-      "src/**/*.js",
-      "!src/**/*.test.js"
+      "src/script/**/*.js",
+      "!src/**/*.test.js",
+      "!src/**/*_manager.js"
     ],
     "moduleNameMapper": {
       "@src/(.*)$": "<rootDir>/src/$1"
