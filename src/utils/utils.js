@@ -23,8 +23,6 @@ async function generateCommentId(author, text) {
 }
 
 /* istanbul ignore next */
-// Se vuoi continuare ad esportare qualcosa tramite module.exports,
-// assicurati di includere isSamePost qui.
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
   module.exports = {
     delay: delay,
