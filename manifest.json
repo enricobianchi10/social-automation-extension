@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "social-automation-extension",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Estensione Chrome per automatizzare l'interazione con i social network.",
   
   "host_permissions": [
@@ -43,4 +43,5 @@
       "run_at": "document_idle"
     }
   ]
+
 }
