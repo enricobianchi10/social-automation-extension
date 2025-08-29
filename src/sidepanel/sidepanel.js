@@ -60,7 +60,7 @@ function showParsingErrors(errors) {
 
   const subtitleEl = document.createElement("p");
   subtitleEl.className = "card-text";
-  setText(subtitleEl, "Il layout della pagina è cambiato e non possiamo procedere. I seguenti selettori sono falliti:");
+  setText(subtitleEl, "Il layout della pagina è cambiato (oppure la connessione non ha permesso di caricare gli elementi necessari) e non possiamo procedere. I seguenti selettori sono falliti:");
   errorContainer.appendChild(subtitleEl);
 
   const errorsList = document.createElement("ul");
