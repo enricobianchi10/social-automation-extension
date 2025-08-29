@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Automazione Social</title>
+  <link rel="stylesheet" href="sidepanel.css" />
+</head>
+<body>
+  <div class="sidepanel-container">
+    <header class="panel-header">
+      <h1>Strumento Automazione Instagram</h1>
+    </header>
+
+    <main class="panel-main">
+
+      <section id="messageContainer" class="card info-card hidden">
+        <h2>Raccolta Dati</h2>
+        <p id="messageParagraph" class="card-text">
+          Apri una pagina di Instagram e accedi al tuo profilo per abilitare la raccolta dati.
+        </p>
+        <button id="getPost" class="btn primary">Inizia raccolta dati</button>
+      </section>
+
+      <section id="downloadContainer" class="card download-card hidden">
+        <h2>Download dati raccolti</h2>
+        <p class="card-text">Premi il pulsante per scaricare i dati come file JSON.</p>
+        <button id="downloadData" class="btn secondary">Scarica i dati raccolti</button>
+      </section>
+
+      <section id="publishContainer" class="card publish-card hidden">
+        <h2>Pubblicazione Commenti</h2>
+        <p class="card-text">Premi per pubblicare le risposte ai nuovi commenti rilevati.</p>
+        <button id="publishComment" class="btn primary">Pubblica risposte</button>
+      </section>
+
+      <section id="statusContainer" class="card status-card hidden">
+        </section>
+
+      <section id="errorContainer" class="card error-card hidden">
+        </section>
+
+    </main>
+  </div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>

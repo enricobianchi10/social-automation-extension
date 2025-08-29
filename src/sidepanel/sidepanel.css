@@ -1,0 +1,164 @@
+:root {
+  --primary-color: #5558e0;
+  --primary-hover: #4548c0;
+  --secondary-color: #e0e2ff;
+  --secondary-text: #3c3e8a;
+  
+  --success-bg: #e6f4ea;
+  --success-border: #38b15d;
+  --success-text: #1e6c38;
+  
+  --error-bg: #fdeded;
+  --error-border: #dc3545;
+  --error-text: #b0273a;
+  
+  --background-color: #f7f9fc;
+  --card-bg: #ffffff;
+  --text-dark: #212529;
+  --text-light: #484e53;
+  --border-color: #e9ecef;
+}
+
+body {
+  width: 100%;
+  min-width: 320px;
+  padding: 1.5rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-dark);
+  box-sizing: border-box;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+.sidepanel-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; 
+}
+
+.panel-header {
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.panel-main {
+  display: flex;
+  flex-direction: column;
+}
+
+h1 {
+  font-size: 1.6rem;
+  margin: 0;
+  color: var(--primary-color);
+}
+
+h2 {
+  font-size: 1.15rem;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: var(--text-dark);
+}
+
+.card {
+  padding: 1.25rem; 
+  border-radius: 12px;
+  background-color: var(--card-bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  margin-bottom: 1rem; 
+}
+
+.card-text {
+  font-size: 0.95rem;
+  color: var(--text-light);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Stili dei bottoni */
+.btn {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  width: 100%;
+  font-weight: 600;
+}
+
+.btn.primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn.primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn.secondary {
+  background-color: var(--secondary-color);
+  color: var(--secondary-text);
+}
+
+.btn.secondary:hover {
+  background-color: #d1d4ff;
+}
+
+.info-card,
+.download-card,
+.publish-card {
+  border-left: 4px solid var(--primary-color);
+}
+
+.status-card {
+  border-left: 4px solid var(--success-border);
+  background-color: var(--success-bg);
+  color: var(--success-text);
+}
+.status-card h2 {
+  color: var(--success-text);
+}
+
+.error-card {
+  border-left: 4px solid var(--error-border);
+  background-color: var(--error-bg);
+  color: var(--error-text);
+}
+
+.error-card h2 {
+  color: var(--error-text);
+}
+
+.error-card a {
+  color: var(--error-text);
+  font-weight: bold;
+}
+
+/* Stile per la lista di errori nel contenitore errori */
+.error-card ul {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.error-card ul li {
+  padding: 0.75rem;
+  background-color: #f5c6cb;
+  border: 1px solid #f5c6cb;
+  border-radius: 6px;
+  color: #721c24;
+  font-size: 0.9rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}

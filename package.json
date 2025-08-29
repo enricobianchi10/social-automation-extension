@@ -18,6 +18,18 @@
   },
   "homepage": "https://github.com/enricobianchi10/social-automation-extension#readme",
   "devDependencies": {
-    "jest": "^30.0.4"
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/script/**/*.js",
+      "!src/**/*.test.js",
+      "!src/**/*_manager.js"
+    ],
+    "moduleNameMapper": {
+      "@src/(.*)$": "<rootDir>/src/$1"
+    }
   }
 }

@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "social-automation-extension",
+  "version": "1.0.0",
+  "description": "Estensione Chrome per automatizzare l'interazione con i social network.",
+  
+  "host_permissions": [
+    "*://www.instagram.com/*",
+    "https://webhook.site/"
+  ],
+
+  "permissions": [
+    "storage",
+    "activeTab",
+    "downloads",
+    "scripting",
+    "cookies",
+    "tabs",
+    "sidePanel"
+  ],
+
+  "action": {
+    "default_icon": {
+      "16": "assets/icon16.png",
+      "32": "assets/icon32.png"
+    }
+  },
+
+  "side_panel": {
+    "default_path": "src/sidepanel/sidepanel.html"
+  },
+
+  "background": {
+    "service_worker": "src/background/background.js",
+    "type": "module"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://www.instagram.com/*"],
+      "js": ["src/utils/utils.js", "src/utils/selectors.js","src/errors/errors.js", "src/model/Post.js", "src/model/Comment.js", "src/script/manager/XPathManager.js", "src/script/change-detector/ChangeDetector.js", "src/script/storage/StorageService.js", "src/script/storage/post/LocalStoragePostAdapter.js", "src/script/validator/PathValidator.js", "src/script/scraper/post/PostScraper.js", "src/script/scraper/comment/CommentScraper.js", 
+      "src/script/navigator/post/PostNavigator.js", "src/script/navigator/comment/CommentNavigator.js", "src/script/navigator/InstagramPageNavigator.js", "src/script/researcher/comment/CommentResearcher.js", "src/script/researcher/post/PostResearcher.js","src/script/publisher/comment/CommentPublisher.js", "src/script/publisher/publisher_manager.js", "src/script/scraper/scraper_manager.js", "src/script/storage/storage_manager.js", "src/script/validator/validator_manager.js"],
+      "run_at": "document_idle"
+    }
+  ]
+
+}
