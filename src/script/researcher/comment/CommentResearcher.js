@@ -1,5 +1,3 @@
-//ipotizzando di ricevere un dato con i campi: urlPost, author comment, text comment
-
 class CommentResearcher {
 
     constructor(post_researcher, comment_navigator){
@@ -33,27 +31,17 @@ class CommentResearcher {
     }
 
     async find(url_post, author_comment, text_comment){ //restituisce il puslante per rispondere al commento che ha autore e testo ricevuti
-        try {
-           await this.postResearcher.find(url_post);
-           if(this.postResearcher.postNavigator.postUrl !== url_post){
-             console.log("Post in cui cercare il commento non trovato, url post non trovato: " + url_post);
-             return false;
-           }
-        }
-        catch(err){
-            console.log("Ricevuto errore di raggiungimento nuovo post (da navigator)");
-            throw err;
+        await this.postResearcher.find(url_post);
+        if(this.postResearcher.postNavigator.postUrl !== url_post){
+            return false;
         }
         await this.commentNavigator.next(); //tutti i commenti caricati
         const commentBoxList = XPathManager.getAll(SELECTORS[this.social].boxComment);
-        if(commentBoxList.length > 0) console.log("Box commenti caricati");
         const commentBoxFiltred = commentBoxList.filter(node => node.querySelector('h3').innerText === author_comment && node.querySelectorAll('span')[2].innerText === text_comment);
         if(commentBoxFiltred.length > 0) {
-            console.log("Box del commento trovato");
             return commentBoxFiltred[0].querySelector('button');
         }
         else {
-            console.log("Box del commento non trovato");
             return false;
         }
     }

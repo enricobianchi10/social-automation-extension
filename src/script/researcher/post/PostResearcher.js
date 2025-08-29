@@ -21,17 +21,9 @@ class PostResearcher {
     }
 
     async find(url_post){
-        console.log("Url attuale: " + window.location.href + " Url post: " + url_post);
         while(this.postNavigator.hasNextBtn && !isSamePost(window.location.href, url_post)){
-            try {
-                await this.postNavigator.next();
-            }
-            catch (err) {
-                console.log("Ricevuto errore di raggiungimento nuovo post");
-                throw err;
-            }
+            await this.postNavigator.next();
         }
-        console.log("Url attuale: " + window.location.href + " Url post: " + url_post);
     }
 }
 

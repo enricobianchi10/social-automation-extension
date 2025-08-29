@@ -23,7 +23,6 @@ describe('InstagramPageNavigator', () => {
     const last_post_url = 'http://instagram.com/p/last_post/';
     const profile_url = 'http://instagram.com/profile_name/';
 
-    let consoleLogSpy;
     let currentMockUrl;
 
     const mockLocation = {
@@ -36,18 +35,8 @@ describe('InstagramPageNavigator', () => {
         hash: ''
     };
 
-    beforeAll(() => {
-        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-    });
-
-    afterAll(() => {
-        consoleLogSpy.mockRestore();
-    });
-
     beforeEach(() => {
         jest.clearAllMocks();
-
-        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
 
         currentMockUrl = init_url;
 
@@ -88,7 +77,6 @@ describe('InstagramPageNavigator', () => {
         await InstagramPageNavigator.openLastPost(social); //restituisce null per default
 
         expect(XPathManager.getOne).toHaveBeenCalledWith(SELECTORS[social].lastPostLink);
-        expect(consoleLogSpy).toHaveBeenCalledWith("Nessun link per aprire l'ultimo post trovato");
         expect(ChangeDetector.waitForUrlChanges).not.toHaveBeenCalled();
         expect(isSamePost).not.toHaveBeenCalled();
     });
@@ -127,7 +115,6 @@ describe('InstagramPageNavigator', () => {
         expect(isSamePost).toHaveBeenCalledWith(init_url, mockPostLink.href);
         expect(mockPostLink.click).not.toHaveBeenCalled();
         expect(ChangeDetector.waitForUrlChanges).not.toHaveBeenCalled();
-        expect(consoleLogSpy).toHaveBeenCalledWith("Sei già nella pagina dell'ultimo post");
     });
 
     test('openLastPost should re-throw error if waitForUrlChanges fails when opening last post', async () => {
@@ -152,7 +139,6 @@ describe('InstagramPageNavigator', () => {
         await InstagramPageNavigator.goToProfile(social);
 
         expect(XPathManager.getOne).toHaveBeenCalledWith(SELECTORS[social].profileLink);
-        expect(consoleLogSpy).toHaveBeenCalledWith("Link per andare sul profilo non trovato");
         expect(ChangeDetector.waitForUrlChanges).not.toHaveBeenCalled();
         expect(ChangeDetector.checkIfPostLoad).not.toHaveBeenCalled();
         expect(ChangeDetector.waitForLoading).not.toHaveBeenCalled();
@@ -182,11 +168,11 @@ describe('InstagramPageNavigator', () => {
     test('goToProfile should click link, wait for URL changes, but not wait for posts if already loaded', async () => {
         const mockProfileLink = { click: jest.fn() };
         XPathManager.getOne.mockReturnValue(mockProfileLink);
-        ChangeDetector.checkIfPostLoad.mockReturnValue(true); // Posts already loaded
+        ChangeDetector.checkIfPostLoad.mockReturnValue(true); // Post già caricati
 
-        // Simulate URL change
+        // Simula cambio URL
         ChangeDetector.waitForUrlChanges.mockImplementation(async (oldUrl) => {
-            currentMockUrl = profile_url; // Update mock URL
+            currentMockUrl = profile_url; // aggiorna mock URL
             return Promise.resolve(true);
         });
 

@@ -18,16 +18,7 @@ describe('PostResearcher', () => {
 
     let postResearcher;
     let mockPostNavigator;
-    let consoleLogSpy;
     let currentMockUrl;
-
-    beforeAll(() => {
-        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-    });
-
-    afterAll(() => {
-        consoleLogSpy.mockRestore();
-    });
 
     beforeEach(() => {
         jest.clearAllMocks();

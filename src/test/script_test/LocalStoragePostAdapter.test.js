@@ -3,7 +3,6 @@ global.StorageService = StorageService;
 const LocalStoragePostAdapter = require('@src/script/storage/post/LocalStoragePostAdapter');
 const Post = require('@src/model/Post'); 
 global.Post = Post;
-//const Comment = require('@src/model/Comment');
 const utils = require('@src/utils/utils');
 global.generateCommentId = utils.generateCommentId;
 
@@ -31,15 +30,6 @@ Object.defineProperty(global, 'chrome', {
 
 describe('LocalStoragePostAdapter', () => {
     let adapter;
-    let consoleLogSpy;
-
-    beforeAll(() => {
-        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-    });
-
-    afterAll(() => {
-        consoleLogSpy.mockRestore();
-    });
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -149,11 +139,11 @@ describe('LocalStoragePostAdapter', () => {
     });
 
     test('get() should return null if postList is empty or undefined or post not found', async () => {
-        mockChromeStorageLocal.get.mockResolvedValueOnce({}); //postList empty
+        mockChromeStorageLocal.get.mockResolvedValueOnce({}); 
         const retrievedPost1 = await adapter.get(1);
         expect(retrievedPost1).toBeNull();
 
-        mockChromeStorageLocal.get.mockResolvedValueOnce({ postList: undefined }); //postList undefined
+        mockChromeStorageLocal.get.mockResolvedValueOnce({ postList: undefined });
         const retrievedPost2 = await adapter.get(1);
         expect(retrievedPost2).toBeNull();
 

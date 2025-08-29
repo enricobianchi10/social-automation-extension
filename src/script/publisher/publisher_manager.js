@@ -59,7 +59,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             }
 
             const comments = message.replies;
-            console.log("Commenti da postare: " + comments);
 
             const lastPostUrl = window.location.href;
             

@@ -123,14 +123,12 @@ class PathValidator {
             this._addError(new ParseError("Link all'ultimo post ha portato al post errato", SELECTORS[this.social].lastPostLink));
             return;
         }
-        try {
-            await ChangeDetector.waitForLoading();
-        } catch(err) {}
+        await ChangeDetector.waitForLoading();
         //arrivato qua dovrei aver caricato correttamente l'ultimo post, controllo selettori
         const postImg = XPathManager.getOne(SELECTORS[this.social].postImage);
         const postCaption = XPathManager.getOne(SELECTORS[this.social].postCaption);
         const postLikes = XPathManager.getOne(SELECTORS[this.social].postLikesNumber);
-        //controllo che sino stati trovati i nodi
+        //controllo che siano stati trovati i nodi
         if(!postImg){
             this._addError(new ParseError("Url dell'immagine del post non trovato", SELECTORS[this.social].postImage));
         }

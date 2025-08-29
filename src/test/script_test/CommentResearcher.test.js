@@ -25,15 +25,6 @@ describe('CommentResearcher', () => {
     let commentResearcher;
     let mockPostResearcher;
     let mockCommentNavigator;
-    let consoleLogSpy;
-
-    beforeAll(() => {
-        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-    });
-
-    afterAll(() => {
-        consoleLogSpy.mockRestore();
-    });
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -52,7 +43,7 @@ describe('CommentResearcher', () => {
 
         XPathManager.getAll.mockReturnValue([]); // Di default, nessuna casella di commento trovata
         SELECTORS[social] = {
-            boxComment: '//div[@role="dialog"]//div[contains(@class, "x1ja2u2z")]' // Esempio di selettore
+            boxComment: '//div[@role="dialog"]//div[contains(@class, "x1ja2u2z")]'
         };
     });
     
@@ -104,7 +95,6 @@ describe('CommentResearcher', () => {
 
         const result = await commentResearcher.find(post_url, comment_author, comment_text);
 
-        // Verifiche
         expect(mockPostResearcher.find).toHaveBeenCalledWith(post_url);
         expect(mockCommentNavigator.next).toHaveBeenCalledTimes(1);
         expect(XPathManager.getAll).toHaveBeenCalledWith(SELECTORS[social].boxComment);

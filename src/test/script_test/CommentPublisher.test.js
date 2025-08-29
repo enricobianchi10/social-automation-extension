@@ -32,7 +32,6 @@ describe('CommentPublisher', () => {
 
     let commentPublisher;
     let mockCommentResearcher;
-    let consoleLogSpy;
 
     // Elementi DOM mockati
     let mockReplyButton;
@@ -40,13 +39,8 @@ describe('CommentPublisher', () => {
     let mockPublishButton;
 
     beforeAll(() => {
-        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
         // Mock dell'Event per dispatchEvent
         global.Event = class extends Event {};
-    });
-
-    afterAll(() => {
-        consoleLogSpy.mockRestore();
     });
 
     beforeEach(() => {
@@ -66,7 +60,7 @@ describe('CommentPublisher', () => {
             textContent: 'Reply Button'
         };
         mockRepliesTextArea = {
-            textContent: '', // Testo iniziale della textarea (vuoto o pre-esistente)
+            textContent: '', // Testo iniziale della textarea
             click: jest.fn(),
             dispatchEvent: jest.fn(), // Per simulare l'evento 'input'
         };
@@ -86,8 +80,8 @@ describe('CommentPublisher', () => {
         });
 
         SELECTORS[social] = {
-            repliesTextArea: '//textarea', // Esempio di selettore
-            publishCommentButton: '//button' // Esempio di selettore
+            repliesTextArea: '//textarea', 
+            publishCommentButton: '//button' 
         }
     });
 
@@ -163,7 +157,6 @@ describe('CommentPublisher', () => {
             await commentPublisher.publish(post_url, comment_author, comment_text, reply_text);
 
             expect(mockCommentResearcher.find).toHaveBeenCalledWith(post_url, comment_author, comment_text);
-            expect(consoleLogSpy).toHaveBeenCalledWith("Commento non trovato");
             expect(mockReplyButton.click).not.toHaveBeenCalled();
             expect(ChangeDetector.waitForLoading).not.toHaveBeenCalled();
             expect(XPathManager.getOne).not.toHaveBeenCalled();
@@ -184,7 +177,6 @@ describe('CommentPublisher', () => {
             expect(mockReplyButton.click).toHaveBeenCalledTimes(1);
             expect(ChangeDetector.waitForLoading).toHaveBeenCalledTimes(1);
             expect(XPathManager.getOne).toHaveBeenCalledWith(SELECTORS[social].repliesTextArea);
-            expect(consoleLogSpy).toHaveBeenCalledWith("Area di testo per la replies non trovata");
             
             // Non dovrebbe tentare di settare il testo o pubblicare
             expect(mockNativeValueSetter).not.toHaveBeenCalled();
@@ -209,7 +201,6 @@ describe('CommentPublisher', () => {
             expect(XPathManager.getOne).toHaveBeenCalledWith(SELECTORS[social].repliesTextArea);
             expect(setTextCommentSpy).toHaveBeenCalledWith(reply_text, mockRepliesTextArea);
             expect(XPathManager.getOne).toHaveBeenCalledWith(SELECTORS[social].publishCommentButton);
-            expect(consoleLogSpy).toHaveBeenCalledWith("Pulsante per pubblicare replies non trovato");
             expect(mockPublishButton.click).not.toHaveBeenCalled();
         });
         
@@ -220,7 +211,6 @@ describe('CommentPublisher', () => {
             await expect(commentPublisher.publish(post_url, comment_author, comment_text, reply_text)).rejects.toThrow(findCommentError);
 
             expect(mockCommentResearcher.find).toHaveBeenCalledWith(post_url, comment_author, comment_text);
-            expect(consoleLogSpy).toHaveBeenCalledWith("ricevuto errore di raggiungimento nuovo post (da researcher)");
             expect(mockReplyButton.click).not.toHaveBeenCalled();
             expect(ChangeDetector.waitForLoading).not.toHaveBeenCalled();
             expect(XPathManager.getOne).not.toHaveBeenCalled();

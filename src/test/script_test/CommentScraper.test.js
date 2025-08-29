@@ -20,20 +20,8 @@ describe('CommentScraper', () => {
     const social = 'instagram';
     let mockCommentNavigator;
     let commentScraper;
-    let consoleLogSpy;
-
-    beforeAll(() => {
-        // Spia su console.log per verificare i messaggi
-        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-    });
-
-    afterAll(() => {
-        // Ripristina console.log dopo tutti i test
-        consoleLogSpy.mockRestore();
-    });
 
     beforeEach(() => {
-        // Pulisci tutti i mock prima di ogni test per garantire l'isolamento
         jest.clearAllMocks();
 
         XPathManager.getAll.mockReturnValue([]); // Default: nessun commento trovato
@@ -70,7 +58,6 @@ describe('CommentScraper', () => {
     test('scrapeAll should call commentNavigator.next()', async () => {
         await commentScraper.scrapeAll();
         expect(commentScraper.commentNavigator.next).toHaveBeenCalledTimes(1);
-        expect(consoleLogSpy).toHaveBeenCalledWith("Inizio scraping dei commenti");
     });
 
     test('should return an empty array if no comments are found', async () => {
@@ -141,8 +128,6 @@ describe('CommentScraper', () => {
         expect(comments[0]).toEqual({ author: 'Autore non trovato', text: 'Solo testo' });
         expect(Comment).toHaveBeenCalledTimes(1);
         expect(Comment).toHaveBeenCalledWith('Autore non trovato', 'Solo testo');
-        expect(consoleLogSpy).toHaveBeenCalledWith("Trovata lista testi commenti di lunghezza:", 1);
-        expect(consoleLogSpy).toHaveBeenCalledWith("Trovata lista autori commenti di lunghezza:", 0);
     });
 
 })

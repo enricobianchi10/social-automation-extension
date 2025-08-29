@@ -41,7 +41,6 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
 //xpath per pulsante pubblica '//article//section//div[./*[contains(text(), "Pubblica")]]' oppure '//article//section//div[@role][./*[text()]]', con article e section che si possono omettere
 //xpath per box commenti '//div[h3]'
 
-//Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value") da il setter nativo del codice (in devtools stringa restituita con nomi semplici e senza location)
-//Object.getOwnPropertyDescriptor(textarea, "value") mostra se .value è stata overridata per textarea (in devtools get e set con nomi non value ma anonimi, devtools mostra [[functionlocation]])
+//Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value") da il setter nativo del codice
 //per triggerare il cambiamento del valore di una textarea utilizzare il setter base (fornito dal Browser) e non l'override in React (se faccio textarea.value utilizza il setter overridato) che 
 //che non permette di modificare il value della textarea

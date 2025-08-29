@@ -32,20 +32,15 @@ class PostNavigator {
     async next(){
         const nextBtn = XPathManager.getOne(SELECTORS[this.social].newPostButton); //selettore per andare avanti di post
         if(!nextBtn){
-            console.log("Nessun pulsante di prossimo post trovato");
             this.hasNextBtn = false;
         }
         else {
-            console.log("Pulsante per prossimo post trovato!");
             nextBtn.click();
-            //await delay(3000); //per verificare che è stato caricato il post nuovo verificare cambio url
             try {
                 await ChangeDetector.waitForUrlChanges(this.postUrl);
-                console.log("Nuovo post raggiunto");
                 this.postUrl = window.location.href;
             }
             catch (err) {
-                console.log("Errore nel raggiungimento del nuovo post");
                 this.hasNextBtn = false;
                 throw err;
             }

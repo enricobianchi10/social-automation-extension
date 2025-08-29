@@ -16,8 +16,6 @@ class LocalStoragePostAdapter extends StorageService {
         const postKey = "post_" + post._number;
         postList[postKey] = postToSave;
         await chrome.storage.local.set({postList});
-        const items = await chrome.storage.local.get("postList");
-        console.log('Contenuto di postList in chrome.storage.local:', items);
     }
 
     async get(number){

@@ -16,39 +16,24 @@ describe('PostNavigator', () => {
     const init_url = 'http://example.com/post/1';
     const next_url = 'http://example.com/post/2';
     const social = 'instagram';
-    let consoleLogSpy;
 
     const mockLocation = {
         href: init_url, // URL iniziale di default
         assign: jest.fn(),
         replace: jest.fn(),
         reload: jest.fn(),
-        // Aggiungi altre proprietà o metodi di 'location' se il tuo codice li usa
         pathname: '/',
         search: '',
         hash: ''
     };
 
-    beforeAll(() => {
-        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-    });
-
-    afterAll(() => {
-        consoleLogSpy.mockRestore();
-    });
-
     beforeEach(() => {
-        // Clear all mocks and reset navigator instance
         jest.clearAllMocks();
         navigator = new PostNavigator(init_url, social);
 
-        // Mock XPathManager to return null by default (no button found)
         XPathManager.getOne.mockReturnValue(null);
-
-        // Mock ChangeDetector methods
         ChangeDetector.waitForUrlChanges.mockResolvedValue(true);
 
-        // Mock SELECTORS data
         SELECTORS[social] = {
             newPostButton: 'mockedSelectorForNewPostButton'
         };
@@ -85,13 +70,11 @@ describe('PostNavigator', () => {
     });
 
     test('should set hasNextBtn to false if no next post button is found', async () => {
-        // XPathManager.getOne mockato per restituire false di default
         await navigator.next();
 
         expect(XPathManager.getOne).toHaveBeenCalledWith(SELECTORS[social].newPostButton);
         expect(navigator.hasNextBtn).toBe(false);
         expect(navigator.postUrl).toBe(init_url); //non deve cambiare postUrl se non trova il pulsante
-        expect(consoleLogSpy).toHaveBeenCalledWith("Nessun pulsante di prossimo post trovato");
     });
 
     test('should click the next post button and wait for URL changes', async () => {

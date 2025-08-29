@@ -32,17 +32,6 @@ describe('PostScraper', () => {
     let postScraper;
     let mockPostNavigator; 
     let mockCommentScraper; 
-    let consoleLogSpy;
-
-    beforeAll(() => {
-        // Spia su console.log per intercettare i messaggi
-        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-    });
-
-    afterAll(() => {
-        // Ripristina console.log dopo tutti i test
-        consoleLogSpy.mockRestore();
-    });
 
     beforeEach(() => {
         // Pulisci tutti i mock e spia prima di ogni test per garantire l'isolamento
@@ -65,12 +54,12 @@ describe('PostScraper', () => {
             configurable: true,
         });
 
-        // Mock di PostNavigator (istanza di un costruttore mockato)
+        // Mock di PostNavigator 
         mockPostNavigator = new PostNavigator(); // Crea un'istanza mockata del PostNavigator
         mockPostNavigator.social = social;
         mockPostNavigator.next.mockResolvedValue(undefined); // next() del PostNavigator si risolve con successo
 
-        // Mock di CommentScraper (istanza di un costruttore mockato)
+        // Mock di CommentScraper 
         mockCommentScraper = new CommentScraper(); // Crea un'istanza mockata del CommentScraper
         mockCommentScraper.social = social;
         mockCommentScraper.scrapeAll.mockResolvedValue([]); // Default scrapeAll() di CommentScraper restituisce array vuoto di commenti
@@ -78,7 +67,7 @@ describe('PostScraper', () => {
         // Mock di XPathManager
         XPathManager.getOne.mockReturnValue(null); // Default nessun elemento trovato (postNumber, img, caption, likes)
 
-        // Mock della classe Post (costruttore)
+        // Mock della classe Post
         Post.mockImplementation((number, url, imgSrc, caption, likes, comments) => 
             ({ number, url, imgSrc, caption, likes, comments }));
         
@@ -126,7 +115,6 @@ describe('PostScraper', () => {
         const postNumber = postScraper._getPostNumber();
         expect(XPathManager.getOne).toHaveBeenCalledWith(SELECTORS[social].postNumber);
         expect(postNumber).toBe(0);
-        expect(consoleLogSpy).toHaveBeenCalledWith("Numero di post non trovato");
     });
 
     test('getPostNumber should return 0 and log if textContent is empty', () => {

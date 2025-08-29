@@ -597,9 +597,6 @@ describe('PathValidator', () => {
     test('validate should call all validation steps in order', async () => {
         
         delay.mockResolvedValue();
-        /*const postValSpy = jest.spyOn(validator, '_validatePostScraping').mockResolvedValue();
-        const publValSpy = jest.spyOn(validator, '_validatePublishing').mockResolvedValue();
-        const profReachValSpy = jest.spyOn(validator, '_validateProfileReaching').mockResolvedValue();*/
         
         validator._validatePostScraping = jest.fn().mockResolvedValue();
         validator._validatePublishing = jest.fn().mockResolvedValue();

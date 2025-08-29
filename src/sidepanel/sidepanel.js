@@ -39,7 +39,7 @@ function showError(message, url = null) {
   const errorContainer = document.getElementById("errorContainer");
   clearChildren(errorContainer);
   const titleEl = document.createElement("h2");
-  setText(titleEl, `⚠️ ${message}`); // Aggiunta emoji per errore
+  setText(titleEl, `⚠️ ${message}`); 
   errorContainer.appendChild(titleEl);
   if (url) {
     const linkEl = document.createElement("a");
@@ -55,7 +55,7 @@ function showParsingErrors(errors) {
   const errorContainer = document.getElementById("errorContainer");
   clearChildren(errorContainer);
   const titleEl = document.createElement("h2");
-  setText(titleEl, "⚠️ Impossibile avviare la raccolta dati"); // Aggiunta emoji
+  setText(titleEl, "⚠️ Impossibile avviare la raccolta dati"); 
   errorContainer.appendChild(titleEl);
 
   const subtitleEl = document.createElement("p");
@@ -85,7 +85,7 @@ document.getElementById("getPost").addEventListener("click", () => {
   hide(document.getElementById("publishContainer"));
   hide(document.getElementById("errorContainer"));
 
-  showStatus("⏳ Raccolta dati in corso...", "Attendi che la raccolta dei dati venga completata senza interagire con la pagina."); // Aggiunta emoji
+  showStatus("⏳ Raccolta dati in corso...", "Attendi che la raccolta dei dati venga completata senza interagire con la pagina.");
 });
 
 document.getElementById("publishComment").addEventListener("click", async () => {
@@ -96,7 +96,7 @@ document.getElementById("publishComment").addEventListener("click", async () => 
   hide(document.getElementById("messageContainer"));
   hide(document.getElementById("errorContainer"));
 
-  showStatus("⏳ Inserimento delle risposte in corso...", "Attendi che le risposte vengano pubblicate senza interagire con la pagina."); // Aggiunta emoji
+  showStatus("⏳ Inserimento delle risposte in corso...", "Attendi che le risposte vengano pubblicate senza interagire con la pagina.");
 });
 
 document.getElementById("downloadData").addEventListener("click", async () => {
@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     instaTabId = await checkCookies(filteredTabs);
 
     if (instaTabId) {
-      showStatus("🔍 Analisi in corso...", "Stiamo analizzando il layout di Instagram. Per favore, attendi il termine del caricamento senza interagire con la pagina."); // Aggiunta emoji
+      showStatus("🔍 Analisi in corso...", "Stiamo analizzando il layout di Instagram. Per favore, attendi il termine del caricamento senza interagire con la pagina.");
       chrome.runtime.sendMessage({ action: "validatePath", social: social, tabId: instaTabId });
     } else {
       setText(messageContainer.querySelector('p'), "Per procedere, effettua prima il login a Instagram. Una volta loggato, l'estensione si abiliterà automaticamente.");
@@ -155,7 +155,7 @@ chrome.runtime.onMessage.addListener(async (message) => {
 
   switch (message.action) {
     case "finishedScrape":
-      showStatus("✅ Raccolta dati completata con successo!"); // Aggiunta emoji
+      showStatus("✅ Raccolta dati completata con successo!");
       const link = document.createElement("a");
       link.href = message.lastPost;
       link.target = "_blank";
@@ -180,7 +180,7 @@ chrome.runtime.onMessage.addListener(async (message) => {
       break;
 
     case "finishedPublish":
-      showStatus("✅ Pubblicazione dei commenti completata con successo!"); // Aggiunta emoji
+      showStatus("✅ Pubblicazione dei commenti completata con successo!");
       setText(messageContainer.querySelector('h2'), "Operazione completata");
       setText(messageContainer.querySelector('p'), "Le risposte ai commenti sono state pubblicate con successo.");
       show(messageContainer);
@@ -191,7 +191,7 @@ chrome.runtime.onMessage.addListener(async (message) => {
       errors = message.errors;
       if (errors.length === 0) {
         hide(document.getElementById("statusContainer"));
-        setText(messageContainer.querySelector('h2'), "🎉 Pronto a iniziare"); // Aggiunta emoji
+        setText(messageContainer.querySelector('h2'), "🎉 Pronto a iniziare");
         setText(messageContainer.querySelector('p'), "La verifica del layout è andata a buon fine. Premi il pulsante per avviare la raccolta dati.");
         show(messageContainer);
       } else {
@@ -208,7 +208,7 @@ chrome.downloads.onChanged.addListener((delta) => {
   const downloadContainer = document.getElementById("downloadContainer");
 
   if (delta.state?.current === "complete") {
-    showStatus("✅ Download terminato con successo!"); // Aggiunta emoji
+    showStatus("✅ Download terminato con successo!");
     show(downloadContainer);
     cleanupDownload();
   }

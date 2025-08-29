@@ -13,16 +13,7 @@ jest.mock('@src/script/change-detector/ChangeDetector');
 
 describe('CommentNavigator', () => {
     let navigator;
-    let consoleLogSpy;
     const social = 'instagram';
-
-    beforeAll(() => {
-        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-    });
-
-    afterAll(() => {
-        consoleLogSpy.mockRestore(); // Ripristina la console
-    });
 
     beforeEach(() => {
         // Resetta i mock prima di ogni test
@@ -77,8 +68,6 @@ describe('CommentNavigator', () => {
         expect(ChangeDetector.waitForLoading).toHaveBeenCalledTimes(1);
         // il pulsante per prossimi commenti non viene trovato e quindi hasNewCommBtn dovrebbe essere settato a false
         expect(navigator.hasNewCommBtn).toBe(false); 
-        //verifica che venga chiamato console log
-        expect(consoleLogSpy).toHaveBeenCalledWith("Commenti non presenti o errore nel loro caricamento");
     })
 
     test('should terminate the loop if no "new comments" button is found', async () => {
@@ -118,6 +107,5 @@ describe('CommentNavigator', () => {
         expect(mockButton.click).toHaveBeenCalledTimes(1);
         expect(ChangeDetector.waitForLoading).toHaveBeenCalledTimes(2);
         expect(navigator.hasNewCommBtn).toBe(false);
-        expect(consoleLogSpy).toHaveBeenCalledWith("Il caricamento dei commenti ha richiesto troppo tempo");
     });
 })
